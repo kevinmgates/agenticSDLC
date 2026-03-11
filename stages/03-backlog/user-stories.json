@@ -1,0 +1,2123 @@
+[
+  {
+    "id": "US-001",
+    "feature_id": "FEAT-001",
+    "epic_id": "EPIC-001",
+    "title": "Set up cross-platform mobile app framework",
+    "user_story": "As a field technician, I want to install and launch a mobile app on my iOS or Android device, so that I can access the field service platform from any supported phone or tablet.",
+    "priority": "Critical",
+    "story_points": 8,
+    "acceptance_criteria": [
+      "Given a technician with an iOS 16+ device, when they install the app from the App Store, then it installs and launches successfully within 3 seconds cold start",
+      "Given a technician with an Android 13+ device, when they install the app from the Play Store, then it installs and launches successfully within 3 seconds cold start",
+      "Given the app is launched for the first time, when the technician reaches the login screen, then it displays the Azure AD SSO login option"
+    ],
+    "tasks": [
+      "Set up cross-platform project scaffold (React Native or .NET MAUI)",
+      "Configure iOS and Android build pipelines",
+      "Implement splash screen and initial loading flow",
+      "Create app store distribution profiles and signing certificates",
+      "Write unit tests for app initialization"
+    ],
+    "dependencies": [],
+    "tags": [
+      "mobile",
+      "ios",
+      "android",
+      "cross-platform",
+      "infrastructure"
+    ],
+    "notes": "Framework choice (React Native vs .NET MAUI) should be finalized in architecture review. Cold start target is < 3 seconds per NFR."
+  },
+  {
+    "id": "US-002",
+    "feature_id": "FEAT-001",
+    "epic_id": "EPIC-001",
+    "title": "Implement mobile app navigation and home screen",
+    "user_story": "As a field technician, I want a clear home screen with intuitive navigation, so that I can access all primary functions within two taps.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given an authenticated technician, when they view the home screen, then they see tiles or tabs for My Work Orders, Schedule, Parts, and Notifications",
+      "Given any primary function, when the technician navigates from the home screen, then the function is reachable within two taps",
+      "Given the technician is on any sub-screen, when they tap the back or home button, then they return to the previous screen or home screen without data loss"
+    ],
+    "tasks": [
+      "Design navigation architecture (tab bar or drawer)",
+      "Implement home screen layout with primary function tiles",
+      "Build navigation stack with back/home support",
+      "Conduct accessibility audit (WCAG 2.1 AA compliance)",
+      "Write UI tests for navigation flows"
+    ],
+    "dependencies": [
+      "US-001"
+    ],
+    "tags": [
+      "mobile",
+      "ux",
+      "navigation",
+      "accessibility"
+    ],
+    "notes": "Navigation pattern should be validated with 3+ field technicians in usability testing."
+  },
+  {
+    "id": "US-003",
+    "feature_id": "FEAT-001",
+    "epic_id": "EPIC-001",
+    "title": "Implement responsive layout for phones and tablets",
+    "user_story": "As a field technician, I want the app to adapt its layout to my device form factor, so that I can use it effectively on both my phone and a ruggedized tablet.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician using a phone (< 7 inch screen), when they view any screen, then the layout uses a single-column design optimized for one-handed use",
+      "Given a technician using a tablet (≥ 7 inch screen), when they view work order details, then the layout uses a split-pane design showing the list and detail side by side",
+      "Given a device orientation change, when the technician rotates the device, then the layout adapts without losing form state or scroll position"
+    ],
+    "tasks": [
+      "Define responsive breakpoints for phone and tablet layouts",
+      "Implement adaptive layout components (single-column and split-pane)",
+      "Handle orientation changes with state preservation",
+      "Test on Surface Pro, iPhone 14, and Samsung Galaxy S23 form factors",
+      "Write snapshot tests for layout variants"
+    ],
+    "dependencies": [
+      "US-001"
+    ],
+    "tags": [
+      "mobile",
+      "responsive",
+      "ux",
+      "tablet"
+    ],
+    "notes": "Surface Pro ruggedized tablets are under consideration for the standardized device program."
+  },
+  {
+    "id": "US-004",
+    "feature_id": "FEAT-002",
+    "epic_id": "EPIC-001",
+    "title": "Implement local offline data storage",
+    "user_story": "As a field technician, I want my work order data stored locally on my device, so that I can view and complete work orders even when I have no network connectivity.",
+    "priority": "Critical",
+    "story_points": 8,
+    "acceptance_criteria": [
+      "Given a technician in an area with no connectivity, when they open the app, then all previously synced work orders are available for viewing",
+      "Given the device has no connectivity, when the technician completes a work order and saves it, then the data is persisted to the local database",
+      "Given the local database contains work order data, when the technician views photos and attachments, then cached attachments are available offline"
+    ],
+    "tasks": [
+      "Select and configure local database (SQLite or Realm)",
+      "Define offline data schema mirroring server-side work order model",
+      "Implement repository pattern with local-first data access",
+      "Build storage management for photos and large attachments",
+      "Write integration tests for offline CRUD operations"
+    ],
+    "dependencies": [
+      "US-001"
+    ],
+    "tags": [
+      "mobile",
+      "offline",
+      "database",
+      "storage"
+    ],
+    "notes": "Local storage must handle photos up to 20MB each. Estimated capacity planning needed for 200 concurrent devices."
+  },
+  {
+    "id": "US-005",
+    "feature_id": "FEAT-002",
+    "epic_id": "EPIC-001",
+    "title": "Build background data sync engine",
+    "user_story": "As a field technician, I want my offline changes to automatically sync when connectivity is restored, so that the back office sees my updates without me taking manual action.",
+    "priority": "Critical",
+    "story_points": 8,
+    "acceptance_criteria": [
+      "Given a technician whose device regains connectivity, when the sync engine detects a network, then all locally queued changes are uploaded to the server within 60 seconds",
+      "Given multiple work orders were updated offline, when the sync runs, then each work order is synced independently so a failure in one does not block others",
+      "Given a sync is in progress, when the technician loses connectivity again, then the sync pauses gracefully and resumes when the connection returns"
+    ],
+    "tasks": [
+      "Implement network connectivity detection service",
+      "Build sync queue with per-record tracking and retry logic",
+      "Implement background sync using platform-specific APIs (iOS BackgroundTasks, Android WorkManager)",
+      "Add sync status indicator to the mobile UI",
+      "Load test with 200 concurrent sync operations"
+    ],
+    "dependencies": [
+      "US-004"
+    ],
+    "tags": [
+      "mobile",
+      "offline",
+      "sync",
+      "background-processing"
+    ],
+    "notes": "Must be resilient to intermittent connectivity (rural job sites). Load testing with 200 concurrent syncs is part of the definition of done."
+  },
+  {
+    "id": "US-006",
+    "feature_id": "FEAT-002",
+    "epic_id": "EPIC-001",
+    "title": "Implement conflict resolution for offline edits",
+    "user_story": "As a field technician, I want the system to handle conflicts when two people edit the same work order offline, so that no data is lost and I am notified of any merge issues.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given two users edited the same work order field offline, when both sync, then the system applies last-write-wins for non-critical fields and flags critical fields for manual review",
+      "Given a conflict is detected during sync, when the technician opens the app, then they see a notification identifying the conflicting work order and fields",
+      "Given a conflict is flagged for manual review, when the supervisor reviews it, then they can choose which version to keep or merge values"
+    ],
+    "tasks": [
+      "Define conflict resolution rules (last-write-wins vs. manual review per field)",
+      "Implement vector clock or timestamp-based conflict detection",
+      "Build conflict notification UI for affected users",
+      "Create supervisor conflict resolution screen",
+      "Write unit tests for all conflict scenarios"
+    ],
+    "dependencies": [
+      "US-005"
+    ],
+    "tags": [
+      "mobile",
+      "offline",
+      "sync",
+      "conflict-resolution"
+    ],
+    "notes": "Conflict resolution rules should be documented and approved by the product owner before implementation."
+  },
+  {
+    "id": "US-007",
+    "feature_id": "FEAT-003",
+    "epic_id": "EPIC-001",
+    "title": "View assigned work orders on mobile",
+    "user_story": "As a field technician, I want to view my assigned work orders on my mobile device, so that I can see my schedule and job details while on the road.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician with assigned work orders, when they open the My Work Orders screen, then they see a list of all assigned work orders sorted by scheduled date",
+      "Given a work order in the list, when the technician taps it, then they see full details including customer info, asset info, tasks, and parts required",
+      "Given the technician is offline, when they view assigned work orders, then all previously synced work orders display with a visual indicator showing the data freshness"
+    ],
+    "tasks": [
+      "Build work order list screen with sorting and grouping",
+      "Implement work order detail screen with all required fields",
+      "Integrate with local offline data store for offline access",
+      "Add data freshness indicator (last synced timestamp)",
+      "Write UI tests for list and detail screens"
+    ],
+    "dependencies": [
+      "US-002",
+      "US-004"
+    ],
+    "tags": [
+      "mobile",
+      "work-order",
+      "ui"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-008",
+    "feature_id": "FEAT-003",
+    "epic_id": "EPIC-001",
+    "title": "Complete and submit work orders on mobile",
+    "user_story": "As a field technician, I want to fill out and submit completed work orders from my mobile device, so that the back office receives my updates immediately without paper forms.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician on-site with an open work order, when they complete all required fields and tap Submit, then the work order status changes to Completed and enters the approval queue",
+      "Given a technician attempts to submit an incomplete form, when required fields are missing, then the form highlights missing fields and prevents submission",
+      "Given the technician is offline, when they submit a completed work order, then it is saved locally and marked for sync when connectivity is restored"
+    ],
+    "tasks": [
+      "Build work order completion form with all required fields",
+      "Implement client-side form validation for required fields",
+      "Wire submission to approval workflow via API (or offline queue)",
+      "Add submission confirmation screen with summary",
+      "Write end-to-end tests for online and offline submission paths"
+    ],
+    "dependencies": [
+      "US-007"
+    ],
+    "tags": [
+      "mobile",
+      "work-order",
+      "forms",
+      "offline"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-009",
+    "feature_id": "FEAT-004",
+    "epic_id": "EPIC-001",
+    "title": "Capture and attach photos to work orders",
+    "user_story": "As a field technician, I want to take photos on-site and attach them to a work order, so that visual documentation of the job is captured digitally.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician on-site, when they tap the photo capture button on a work order, then the device camera opens and the captured photo is attached to the work order",
+      "Given multiple photos are needed, when the technician captures additional photos, then all photos are added to the work order as a scrollable gallery",
+      "Given the technician is offline, when they capture photos, then the photos are stored locally and sync with the work order when connectivity returns"
+    ],
+    "tasks": [
+      "Implement camera integration using platform-native APIs",
+      "Build photo gallery view within the work order detail screen",
+      "Compress photos for optimal storage (configurable quality)",
+      "Store photos in local offline database with work order linkage",
+      "Write integration tests for camera capture flow"
+    ],
+    "dependencies": [
+      "US-007"
+    ],
+    "tags": [
+      "mobile",
+      "camera",
+      "photos",
+      "offline"
+    ],
+    "notes": "Photos may be up to 20MB each. Compression strategy should balance quality with storage/bandwidth."
+  },
+  {
+    "id": "US-010",
+    "feature_id": "FEAT-004",
+    "epic_id": "EPIC-001",
+    "title": "Collect digital signatures from customers",
+    "user_story": "As a field technician, I want to collect a digital signature from the customer on-site, so that the job sign-off is captured without paper forms.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a technician has completed a job, when they tap Request Sign-Off, then a digital signature pad is displayed for the customer",
+      "Given the customer draws their signature, when they confirm, then the signature image is stored and linked to the work order with a timestamp",
+      "Given the technician is offline, when a signature is captured, then it is stored locally and synced when connectivity returns"
+    ],
+    "tasks": [
+      "Implement touch-based signature capture component",
+      "Store signatures as PNG images with metadata (timestamp, work order ID)",
+      "Integrate signature capture into work order completion flow",
+      "Test on both phone and tablet form factors",
+      "Write unit tests for signature storage and retrieval"
+    ],
+    "dependencies": [
+      "US-008"
+    ],
+    "tags": [
+      "mobile",
+      "digital-signature",
+      "compliance",
+      "offline"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-011",
+    "feature_id": "FEAT-004",
+    "epic_id": "EPIC-001",
+    "title": "Complete compliance checklists on mobile",
+    "user_story": "As a field technician, I want to complete compliance checklists on my mobile device during on-site work, so that all regulatory requirements are documented digitally.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a work order with compliance requirements, when the technician opens the checklist tab, then all required checklist items are displayed",
+      "Given a checklist with mandatory items, when the technician attempts to submit without completing all items, then the form prevents submission and highlights incomplete items",
+      "Given the technician is offline, when they complete a checklist, then it is saved locally and synced with the work order when connectivity returns"
+    ],
+    "tasks": [
+      "Build configurable checklist component (checkbox, text, photo-required items)",
+      "Implement checklist template system per work order type",
+      "Integrate checklists into work order completion flow as a required step",
+      "Support offline checklist completion and sync",
+      "Write tests for checklist validation logic"
+    ],
+    "dependencies": [
+      "US-008"
+    ],
+    "tags": [
+      "mobile",
+      "compliance",
+      "checklists",
+      "offline"
+    ],
+    "notes": "Checklist templates must be configurable per work order type — admin configuration UI may be a separate story."
+  },
+  {
+    "id": "US-012",
+    "feature_id": "FEAT-005",
+    "epic_id": "EPIC-002",
+    "title": "Create work orders from customer calls",
+    "user_story": "As a dispatcher, I want to create a new work order when a customer calls in, so that their service request is captured and enters the dispatch queue.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a dispatcher receiving a customer call, when they complete the new work order form with customer, location, issue description, and priority, then a work order is created and enters the unassigned queue",
+      "Given the dispatcher selects a customer, when the customer is chosen, then the form auto-populates with customer address and contact details from the CRM",
+      "Given required fields are not completed, when the dispatcher tries to save, then validation errors are shown and the form is not submitted"
+    ],
+    "tasks": [
+      "Design and build the new work order entry form (web)",
+      "Implement customer lookup with auto-population of details",
+      "Create work order API endpoint for manual creation",
+      "Add the new work order to the dispatch queue",
+      "Write unit and integration tests"
+    ],
+    "dependencies": [],
+    "tags": [
+      "web",
+      "work-order",
+      "dispatch",
+      "forms"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-013",
+    "feature_id": "FEAT-005",
+    "epic_id": "EPIC-002",
+    "title": "Auto-create work orders from maintenance contracts",
+    "user_story": "As a dispatcher, I want work orders to be automatically created when maintenance contract triggers fire, so that scheduled maintenance is dispatched without manual intervention.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given an active maintenance contract with a scheduled trigger, when the trigger date arrives, then a work order is automatically created and placed in the dispatch queue",
+      "Given an auto-created work order, when a dispatcher views it, then it is clearly labeled as contract-triggered with the contract reference linked",
+      "Given a contract trigger fires but required data is incomplete, when the system processes it, then the work order is created in Draft status and the dispatcher is alerted"
+    ],
+    "tasks": [
+      "Build scheduled job to evaluate contract trigger dates daily",
+      "Implement auto-creation logic with contract data mapping",
+      "Label auto-created work orders with trigger source metadata",
+      "Add alerting for draft work orders needing dispatcher attention",
+      "Write integration tests for trigger evaluation and work order creation"
+    ],
+    "dependencies": [
+      "US-012"
+    ],
+    "tags": [
+      "backend",
+      "automation",
+      "contracts",
+      "scheduling"
+    ],
+    "notes": "The architecture should be extensible for IoT sensor triggers in Phase 2."
+  },
+  {
+    "id": "US-014",
+    "feature_id": "FEAT-006",
+    "epic_id": "EPIC-002",
+    "title": "Search and link Maximo assets to work orders",
+    "user_story": "As a dispatcher, I want to search for customer assets in IBM Maximo and link them to a work order, so that technicians know exactly which equipment they are servicing.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a dispatcher creating or editing a work order, when they search for an asset by name or ID, then matching assets from IBM Maximo are displayed with key details (asset ID, type, location)",
+      "Given search results are displayed, when the dispatcher selects an asset, then it is linked to the work order and the asset details are saved",
+      "Given the Maximo API is temporarily unavailable, when a search is attempted, then the system displays a graceful error message and allows the work order to be saved without an asset link"
+    ],
+    "tasks": [
+      "Build Maximo API client for asset search endpoint",
+      "Implement asset search UI component with type-ahead",
+      "Store asset linkage on work order record",
+      "Implement error handling for Maximo API unavailability",
+      "Write integration tests with mock Maximo responses"
+    ],
+    "dependencies": [
+      "US-012"
+    ],
+    "tags": [
+      "integration",
+      "maximo",
+      "api",
+      "work-order"
+    ],
+    "notes": "Asset search must return results within 3 seconds per feature acceptance criteria."
+  },
+  {
+    "id": "US-015",
+    "feature_id": "FEAT-006",
+    "epic_id": "EPIC-002",
+    "title": "View asset maintenance history from work orders",
+    "user_story": "As a field technician, I want to view the maintenance history and specifications for a linked asset, so that I have full context before starting a repair.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a work order linked to a Maximo asset, when the technician taps View Asset Details, then the asset's maintenance history and specifications are displayed",
+      "Given the technician is offline, when they view asset details, then the last cached asset data is shown with an indicator of when it was last refreshed",
+      "Given an asset has no maintenance history, when the technician views it, then a clear message indicates no prior history and core specifications are still displayed"
+    ],
+    "tasks": [
+      "Build asset detail screen in the mobile app",
+      "Fetch and display maintenance history from Maximo API",
+      "Cache asset details for offline access",
+      "Display data freshness indicator",
+      "Write UI and integration tests"
+    ],
+    "dependencies": [
+      "US-014",
+      "US-007"
+    ],
+    "tags": [
+      "mobile",
+      "integration",
+      "maximo",
+      "offline"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-016",
+    "feature_id": "FEAT-007",
+    "epic_id": "EPIC-002",
+    "title": "Supervisor approval of completed work orders",
+    "user_story": "As a supervisor, I want to review and approve or reject completed work orders in an approval queue, so that work quality is verified before finance review.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician has submitted a completed work order, when the supervisor opens their approval queue, then the work order appears with all completion details including photos and checklists",
+      "Given a supervisor reviews a work order, when they tap Approve, then the work order advances to the finance review stage and the technician is notified",
+      "Given a supervisor finds issues, when they tap Reject with comments, then the work order is returned to the technician with the rejection reason and a notification is sent"
+    ],
+    "tasks": [
+      "Build supervisor approval queue UI (web and/or mobile)",
+      "Implement approve/reject API endpoints with workflow state transitions",
+      "Send notifications on approval or rejection (in-app and Teams)",
+      "Capture approval timestamp and supervisor identity for audit trail",
+      "Write end-to-end tests for approval and rejection flows"
+    ],
+    "dependencies": [
+      "US-008"
+    ],
+    "tags": [
+      "workflow",
+      "approval",
+      "web",
+      "notifications"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-017",
+    "feature_id": "FEAT-007",
+    "epic_id": "EPIC-002",
+    "title": "Finance review and approval before invoicing",
+    "user_story": "As a finance reviewer, I want to review supervisor-approved work orders with cost details before they are sent to SAP for invoicing, so that billing accuracy is ensured.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a supervisor has approved a work order, when finance opens their review queue, then the work order appears with cost breakdown, labor hours, and parts used",
+      "Given a finance reviewer approves a work order, when they confirm, then the work order is marked as ready for invoicing and the SAP invoicing process is triggered",
+      "Given a finance reviewer rejects a work order, when they submit with comments, then the work order returns to the supervisor stage with the rejection reason"
+    ],
+    "tasks": [
+      "Build finance review queue UI with cost details view",
+      "Implement finance approve/reject API with state transitions",
+      "Trigger SAP invoicing process on finance approval",
+      "Capture audit trail for finance review actions",
+      "Write integration tests for end-to-end approval chain"
+    ],
+    "dependencies": [
+      "US-016"
+    ],
+    "tags": [
+      "workflow",
+      "approval",
+      "finance",
+      "sap-integration"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-018",
+    "feature_id": "FEAT-008",
+    "epic_id": "EPIC-002",
+    "title": "Map legacy paper forms to digital equivalents",
+    "user_story": "As a field technician, I want digital work order forms that capture the same fields as the current paper forms, so that I have a familiar experience without any data being lost in the transition.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given the current paper work order form, when compared field-by-field to the digital form, then all data fields from the paper version are present in the digital version",
+      "Given a technician filling the digital form, when they review the layout, then the fields are logically grouped and labeled using familiar terminology",
+      "Given the digital form captures all required fields, when the data is submitted, then it flows directly into the approval workflow without manual re-entry"
+    ],
+    "tasks": [
+      "Audit all existing paper form fields and create a mapping document",
+      "Design digital form layout with logical field grouping",
+      "Implement all mapped fields in the mobile work order form",
+      "Validate mapping completeness with Priya Nair (BA)",
+      "Write tests verifying all fields are persisted"
+    ],
+    "dependencies": [
+      "US-008"
+    ],
+    "tags": [
+      "mobile",
+      "forms",
+      "migration",
+      "ux"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-019",
+    "feature_id": "FEAT-008",
+    "epic_id": "EPIC-002",
+    "title": "Enforce required field validation on digital forms",
+    "user_story": "As a dispatcher, I want the digital work order forms to enforce required field completion, so that incomplete data never enters the approval workflow.",
+    "priority": "Critical",
+    "story_points": 2,
+    "acceptance_criteria": [
+      "Given a technician filling out a digital form, when they miss a required field and attempt to submit, then the form highlights the missing field with a clear error message",
+      "Given a form with conditional required fields (e.g., parts used requires quantity), when a triggering field is filled, then dependent required fields become enforced",
+      "Given all required fields are completed, when the technician submits, then the form processes successfully without validation errors"
+    ],
+    "tasks": [
+      "Define required field rules for each work order type",
+      "Implement client-side validation with inline error messages",
+      "Implement conditional field requirement logic",
+      "Write unit tests for all validation rules"
+    ],
+    "dependencies": [
+      "US-018"
+    ],
+    "tags": [
+      "mobile",
+      "forms",
+      "validation"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-020",
+    "feature_id": "FEAT-009",
+    "epic_id": "EPIC-003",
+    "title": "Display unassigned work orders on dispatch board",
+    "user_story": "As a dispatcher, I want to see all unassigned work orders on a digital dispatch board, so that I can manage the daily schedule without a physical whiteboard.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given work orders exist in the unassigned queue, when the dispatcher opens the dispatch board, then all unassigned work orders are displayed with priority, customer, and location",
+      "Given the dispatch board is open, when a new work order is created, then it appears on the board within 60 seconds without a manual refresh",
+      "Given the dispatch board has many work orders, when the dispatcher filters by priority or region, then the list updates immediately to show matching work orders"
+    ],
+    "tasks": [
+      "Design dispatch board layout with unassigned work order panel",
+      "Implement real-time data updates via WebSocket or SignalR",
+      "Build filter/sort controls for priority, region, and date",
+      "Ensure board loads within 2 seconds with a full day's data",
+      "Write UI and performance tests"
+    ],
+    "dependencies": [
+      "US-012"
+    ],
+    "tags": [
+      "web",
+      "dispatch",
+      "real-time",
+      "dashboard"
+    ],
+    "notes": "Board must load within 2 seconds per feature DoD."
+  },
+  {
+    "id": "US-021",
+    "feature_id": "FEAT-009",
+    "epic_id": "EPIC-003",
+    "title": "Drag-and-drop work order assignment",
+    "user_story": "As a dispatcher, I want to drag and drop work orders onto technician time slots, so that I can assign jobs quickly and intuitively.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given an unassigned work order on the dispatch board, when the dispatcher drags it onto a technician's time slot, then the work order is assigned to that technician for the selected time",
+      "Given a technician's schedule is full, when the dispatcher attempts to drop a work order, then a visual indicator warns of the scheduling conflict",
+      "Given a work order is assigned via drag-and-drop, when the assignment is saved, then the technician receives a notification of the new assignment"
+    ],
+    "tasks": [
+      "Implement drag-and-drop interaction library for the scheduling grid",
+      "Build technician schedule timeline view with available slots",
+      "Add conflict detection for overlapping assignments",
+      "Trigger assignment notification on successful drop",
+      "Test drag-and-drop on Chrome and Edge browsers"
+    ],
+    "dependencies": [
+      "US-020"
+    ],
+    "tags": [
+      "web",
+      "dispatch",
+      "ux",
+      "drag-and-drop"
+    ],
+    "notes": "Usability testing with 3+ dispatchers required per feature DoD."
+  },
+  {
+    "id": "US-022",
+    "feature_id": "FEAT-009",
+    "epic_id": "EPIC-003",
+    "title": "Suggest optimal technician assignments",
+    "user_story": "As a dispatcher, I want the system to suggest the best technician for a work order based on location and skills, so that I can make faster and smarter dispatch decisions.",
+    "priority": "High",
+    "story_points": 8,
+    "acceptance_criteria": [
+      "Given an unassigned work order, when the dispatcher clicks Suggest Assignment, then the system ranks available technicians by proximity and relevant skills",
+      "Given multiple technicians are equally close, when the suggestion is generated, then the system considers current workload and availability to break the tie",
+      "Given no technicians are available in the optimal time window, when the dispatcher views suggestions, then the system recommends the next available slot with the best-fit technician"
+    ],
+    "tasks": [
+      "Build assignment optimization algorithm considering location, skills, and workload",
+      "Integrate technician location data from FleetComplete for proximity scoring",
+      "Implement skills matching against work order requirements",
+      "Design suggestion UI with ranked technician list and rationale",
+      "Write tests for optimization scoring logic"
+    ],
+    "dependencies": [
+      "US-021",
+      "US-023"
+    ],
+    "tags": [
+      "web",
+      "dispatch",
+      "algorithm",
+      "optimization"
+    ],
+    "notes": "Initial version uses basic distance + skill matching. ML-based optimization could be a Phase 2 enhancement."
+  },
+  {
+    "id": "US-023",
+    "feature_id": "FEAT-010",
+    "epic_id": "EPIC-003",
+    "title": "Display real-time technician locations on map",
+    "user_story": "As a dispatcher, I want to see real-time technician locations on a map within the dispatch board, so that I can assign the nearest available technician to urgent jobs.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given the dispatch board is open, when the dispatcher toggles the map view, then all active technician locations are shown as markers with names and current status",
+      "Given a technician's vehicle is moving, when the dispatcher views the map, then the marker position updates within 30 seconds",
+      "Given 40+ technicians are active (pilot region), when the map renders, then all markers display correctly without performance degradation"
+    ],
+    "tasks": [
+      "Integrate FleetComplete GPS API for real-time location data",
+      "Implement map component with technician markers (Azure Maps or Bing Maps)",
+      "Build polling or WebSocket connection for location updates",
+      "Add technician status tooltips on marker hover",
+      "Performance test with 40+ simultaneous markers"
+    ],
+    "dependencies": [
+      "US-020"
+    ],
+    "tags": [
+      "web",
+      "dispatch",
+      "map",
+      "fleet-complete",
+      "integration"
+    ],
+    "notes": "API rate limits for FleetComplete must be documented and respected."
+  },
+  {
+    "id": "US-024",
+    "feature_id": "FEAT-010",
+    "epic_id": "EPIC-003",
+    "title": "Handle stale GPS data gracefully",
+    "user_story": "As a dispatcher, I want to be notified when technician location data is stale or unavailable, so that I do not make dispatch decisions based on outdated information.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given the FleetComplete API is unavailable, when the dispatcher views the map, then a banner indicates location data may be stale and shows the last successful update time",
+      "Given a technician's GPS has not updated in more than 5 minutes, when the dispatcher views the map, then that technician's marker is visually distinguished (e.g., grayed out) with last known time",
+      "Given the FleetComplete API recovers, when the connection is restored, then the map resumes live updates and the stale data banner is removed"
+    ],
+    "tasks": [
+      "Implement health check for FleetComplete API connectivity",
+      "Add visual indicators for stale markers (grayed out, timestamp badge)",
+      "Display banner notification for API outages",
+      "Implement automatic recovery detection and banner removal",
+      "Write tests for degraded and recovery scenarios"
+    ],
+    "dependencies": [
+      "US-023"
+    ],
+    "tags": [
+      "web",
+      "dispatch",
+      "fleet-complete",
+      "error-handling"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-025",
+    "feature_id": "FEAT-011",
+    "epic_id": "EPIC-003",
+    "title": "Send push notifications for new assignments",
+    "user_story": "As a field technician, I want to receive a push notification when I am assigned a new work order, so that I am immediately aware of new jobs without checking the app.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a dispatcher assigns a work order to a technician, when the assignment is saved, then the technician receives a push notification within 60 seconds",
+      "Given the technician's device is offline, when the device regains connectivity, then any missed assignment notifications are delivered",
+      "Given the notification is received, when the technician taps it, then the app opens directly to the assigned work order detail screen"
+    ],
+    "tasks": [
+      "Configure push notification service (Azure Notification Hubs or Firebase Cloud Messaging)",
+      "Register device tokens during app authentication",
+      "Implement server-side notification dispatch on work order assignment",
+      "Handle deep linking from notification to work order detail",
+      "Test push notifications on iOS and Android"
+    ],
+    "dependencies": [
+      "US-001"
+    ],
+    "tags": [
+      "mobile",
+      "push-notification",
+      "real-time"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-026",
+    "feature_id": "FEAT-011",
+    "epic_id": "EPIC-003",
+    "title": "Accept or flag work order assignments",
+    "user_story": "As a field technician, I want to accept or flag an assigned work order from my mobile device, so that the dispatcher knows I can take the job or needs to reassign it.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a technician receives an assignment notification, when they tap it, then the work order details are displayed with Accept and Flag buttons",
+      "Given the technician taps Accept, when the action is confirmed, then the work order status updates to Accepted and the dispatcher sees the confirmation",
+      "Given the technician taps Flag, when they provide a reason (e.g., too far, missing skills), then the dispatcher is notified and the work order returns to the unassigned queue"
+    ],
+    "tasks": [
+      "Build Accept/Flag action buttons on work order detail screen",
+      "Implement status update API for accept and flag actions",
+      "Notify dispatcher on flag with reason text",
+      "Return flagged work orders to unassigned queue",
+      "Write end-to-end tests for accept and flag flows"
+    ],
+    "dependencies": [
+      "US-025",
+      "US-007"
+    ],
+    "tags": [
+      "mobile",
+      "work-order",
+      "dispatch",
+      "notifications"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-027",
+    "feature_id": "FEAT-012",
+    "epic_id": "EPIC-004",
+    "title": "Check parts availability from work order view",
+    "user_story": "As a field technician, I want to check real-time parts availability from my work order, so that I know if the required parts are in stock before traveling to the job site.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician viewing a work order, when they tap Check Parts, then the system queries SAP S/4HANA and displays current stock levels for all required parts",
+      "Given a part is in stock, when the results are displayed, then a green indicator shows availability with the quantity on hand",
+      "Given the SAP API is slow or unavailable, when a parts check is initiated, then the system times out after 10 seconds and suggests the technician call the warehouse directly"
+    ],
+    "tasks": [
+      "Build parts availability check UI button on work order detail screen",
+      "Implement SAP S/4HANA inventory query API call",
+      "Display results with color-coded availability indicators",
+      "Implement 10-second timeout with graceful fallback message",
+      "Write integration tests with mock SAP responses"
+    ],
+    "dependencies": [
+      "US-007",
+      "US-065"
+    ],
+    "tags": [
+      "mobile",
+      "sap-integration",
+      "inventory",
+      "api"
+    ],
+    "notes": "Response time must be under 5 seconds for the 95th percentile per feature DoD."
+  },
+  {
+    "id": "US-028",
+    "feature_id": "FEAT-012",
+    "epic_id": "EPIC-004",
+    "title": "Display warehouse locations and pickup times",
+    "user_story": "As a field technician, I want to see which warehouse has the parts I need and the estimated pickup time, so that I can plan my route efficiently.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given parts are available at one or more warehouses, when the technician views the parts check results, then each warehouse is listed with its name, address, and distance from the job site",
+      "Given a warehouse has the required parts, when the technician views details, then an estimated pickup time is displayed based on warehouse operating hours",
+      "Given multiple warehouses have the parts, when the results are shown, then they are sorted by proximity to the technician's current location or the job site"
+    ],
+    "tasks": [
+      "Extend SAP inventory query to include warehouse location data",
+      "Implement proximity sorting using job site coordinates",
+      "Display warehouse details (address, hours, distance)",
+      "Add map link to warehouse for navigation",
+      "Write unit tests for sorting and display logic"
+    ],
+    "dependencies": [
+      "US-027"
+    ],
+    "tags": [
+      "mobile",
+      "sap-integration",
+      "inventory",
+      "location"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-029",
+    "feature_id": "FEAT-013",
+    "epic_id": "EPIC-004",
+    "title": "Auto-verify parts before dispatch confirmation",
+    "user_story": "As a dispatcher, I want the system to automatically check parts availability when I am about to dispatch a work order, so that I avoid sending a technician to a job without the right parts.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a dispatcher is about to assign a work order, when the system checks parts availability, then a green/yellow/red indicator shows parts readiness on the dispatch board",
+      "Given all required parts are available, when the indicator is green, then the dispatcher can proceed with dispatch without delay",
+      "Given the parts check fails due to SAP unavailability, when the system cannot verify, then a yellow warning is shown and the dispatcher can override with a documented justification"
+    ],
+    "tasks": [
+      "Implement pre-dispatch parts verification trigger on the dispatch board",
+      "Build traffic light indicator UI (green/yellow/red)",
+      "Integrate with SAP inventory API for automatic verification",
+      "Allow dispatcher override with mandatory justification field",
+      "Write integration tests for automated verification flow"
+    ],
+    "dependencies": [
+      "US-021",
+      "US-027"
+    ],
+    "tags": [
+      "web",
+      "dispatch",
+      "sap-integration",
+      "inventory",
+      "automation"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-030",
+    "feature_id": "FEAT-013",
+    "epic_id": "EPIC-004",
+    "title": "Alert dispatchers on parts unavailability",
+    "user_story": "As a dispatcher, I want to be alerted when required parts are unavailable and see alternatives or restock dates, so that I can reschedule or adjust the job accordingly.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given required parts are unavailable, when the dispatcher views the alert, then alternative compatible parts or estimated restock dates are suggested",
+      "Given a work order has been dispatched with a parts warning, when the technician views the order on mobile, then the parts risk is clearly flagged with details",
+      "Given parts unavailability is detected, when the dispatcher chooses to reschedule, then the work order is returned to the queue with a parts-pending status"
+    ],
+    "tasks": [
+      "Build parts unavailability alert notification for dispatchers",
+      "Query SAP for alternative parts and restock estimates",
+      "Propagate parts risk flag to mobile work order view",
+      "Implement reschedule action with parts-pending status",
+      "Write tests for alert and reschedule flows"
+    ],
+    "dependencies": [
+      "US-029"
+    ],
+    "tags": [
+      "web",
+      "dispatch",
+      "sap-integration",
+      "alerts"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-031",
+    "feature_id": "FEAT-014",
+    "epic_id": "EPIC-004",
+    "title": "Replace legacy SAP stored procedures with REST APIs",
+    "user_story": "As an IT admin, I want all SAP S/4HANA integrations to use modern REST APIs instead of legacy stored procedures, so that the integration is maintainable and resilient to SAP updates.",
+    "priority": "Critical",
+    "story_points": 13,
+    "acceptance_criteria": [
+      "Given the legacy stored procedures are identified, when the migration is complete, then all data exchange with SAP uses RESTful API calls instead of stored procedures",
+      "Given the new API integration is deployed, when SAP inventory data changes, then the platform reflects the update within 5 minutes",
+      "Given a data discrepancy between SAP and the platform, when an admin investigates, then a reconciliation log shows the source and timing of the discrepancy"
+    ],
+    "tasks": [
+      "Audit all existing SAP stored procedures and document their function",
+      "Map each stored procedure to the equivalent SAP S/4HANA REST API",
+      "Implement REST API clients for inventory, financials, and invoicing",
+      "Build data reconciliation logging",
+      "Test each replaced integration against SAP sandbox",
+      "Create rollback plan for each procedure replacement"
+    ],
+    "dependencies": [],
+    "tags": [
+      "backend",
+      "sap-integration",
+      "api",
+      "migration",
+      "infrastructure"
+    ],
+    "notes": "13-point story — candidate for splitting into separate stories per SAP module (inventory, financials, invoicing). This is the highest-risk integration work."
+  },
+  {
+    "id": "US-032",
+    "feature_id": "FEAT-014",
+    "epic_id": "EPIC-004",
+    "title": "Implement API versioning for SAP integration",
+    "user_story": "As an IT admin, I want the SAP API integration to support versioning, so that SAP quarterly updates do not break the platform.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given the API integration uses versioned contracts, when SAP performs a quarterly update, then the existing API version continues to function without changes",
+      "Given a new SAP API version is available, when the platform is updated to support it, then the old version remains active during a deprecation period",
+      "Given an API version mismatch is detected, when the integration layer processes a request, then it logs a warning and falls back to the compatible version"
+    ],
+    "tasks": [
+      "Design API versioning strategy (URL path or header-based)",
+      "Implement version negotiation in the SAP integration layer",
+      "Add version mismatch detection and logging",
+      "Document versioning strategy and deprecation policy",
+      "Write tests for version fallback scenarios"
+    ],
+    "dependencies": [
+      "US-031"
+    ],
+    "tags": [
+      "backend",
+      "sap-integration",
+      "api",
+      "versioning"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-033",
+    "feature_id": "FEAT-014",
+    "epic_id": "EPIC-004",
+    "title": "Build data reconciliation logging for SAP sync",
+    "user_story": "As an IT admin, I want a reconciliation log that tracks data discrepancies between SAP and the platform, so that I can identify and resolve sync issues quickly.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given the platform syncs data with SAP, when a sync cycle completes, then a log entry records the number of records synced, any discrepancies found, and their details",
+      "Given a discrepancy is detected, when the admin views the reconciliation log, then the source system, affected record IDs, field-level differences, and timestamps are shown",
+      "Given the reconciliation log grows over time, when the admin queries it, then results can be filtered by date range, system, and severity"
+    ],
+    "tasks": [
+      "Design reconciliation log schema and storage",
+      "Implement post-sync comparison logic to detect discrepancies",
+      "Build admin UI for viewing and filtering reconciliation logs",
+      "Set up automated alerting for high-severity discrepancies",
+      "Write tests for discrepancy detection logic"
+    ],
+    "dependencies": [
+      "US-031"
+    ],
+    "tags": [
+      "backend",
+      "sap-integration",
+      "monitoring",
+      "logging"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-034",
+    "feature_id": "FEAT-015",
+    "epic_id": "EPIC-005",
+    "title": "Customer login and work order dashboard",
+    "user_story": "As a customer, I want to log into a self-service portal and see a dashboard of my active work orders, so that I can track the status of my service requests without calling the 1-800 number.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a customer with valid credentials, when they log into the portal, then they see a dashboard listing all active and recent work orders for their account",
+      "Given the dashboard is displayed, when a work order status changes, then the dashboard reflects the update within 2 minutes",
+      "Given a customer has no active work orders, when they view the dashboard, then a helpful message indicates no active requests with a link to view history"
+    ],
+    "tasks": [
+      "Build customer portal web application shell with authentication",
+      "Design and implement the work order dashboard layout",
+      "Implement API endpoint that returns customer-scoped work orders",
+      "Configure Azure AD B2C or equivalent for customer authentication",
+      "Write end-to-end tests for login and dashboard display"
+    ],
+    "dependencies": [
+      "US-047"
+    ],
+    "tags": [
+      "web",
+      "customer-portal",
+      "dashboard",
+      "authentication"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-035",
+    "feature_id": "FEAT-015",
+    "epic_id": "EPIC-005",
+    "title": "View real-time work order status details",
+    "user_story": "As a customer, I want to see real-time status details for a specific work order, so that I know exactly where my service request stands.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a customer clicks on a work order, when the detail page loads, then the current status, assigned technician name, and estimated completion time are displayed",
+      "Given a work order is in progress, when the technician updates the status, then the detail page reflects the change within 2 minutes",
+      "Given a work order includes milestone events, when the customer views the timeline, then all milestones (created, dispatched, en route, completed) are shown with timestamps"
+    ],
+    "tasks": [
+      "Build work order detail page with status timeline",
+      "Implement real-time status updates via polling or SignalR",
+      "Display assigned technician info and ETA",
+      "Design responsive layout for desktop and mobile browsers",
+      "Write UI tests for detail page components"
+    ],
+    "dependencies": [
+      "US-034"
+    ],
+    "tags": [
+      "web",
+      "customer-portal",
+      "real-time",
+      "work-order"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-036",
+    "feature_id": "FEAT-015",
+    "epic_id": "EPIC-005",
+    "title": "Customer self-registration flow",
+    "user_story": "As a new customer, I want to request portal access through a self-registration form, so that I can start tracking my work orders without calling support.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a visitor without an account, when they click Register on the portal, then a self-registration form collects company name, contact info, and account number",
+      "Given the form is submitted, when an admin reviews the request, then they can approve or reject the registration with a single click",
+      "Given the registration is approved, when the customer is notified, then they receive an email with login instructions"
+    ],
+    "tasks": [
+      "Build self-registration form with required fields",
+      "Create admin review queue for pending registrations",
+      "Implement approval/rejection workflow with email notifications",
+      "Validate account number against existing customer records",
+      "Write tests for registration and approval flows"
+    ],
+    "dependencies": [
+      "US-034"
+    ],
+    "tags": [
+      "web",
+      "customer-portal",
+      "registration",
+      "admin"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-037",
+    "feature_id": "FEAT-016",
+    "epic_id": "EPIC-005",
+    "title": "Send milestone notifications to customers",
+    "user_story": "As a customer, I want to receive automated notifications when key milestones are reached on my work orders, so that I stay informed without having to check the portal.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician is dispatched to a job, when the assignment is confirmed, then the customer receives a notification with the technician name and estimated arrival window",
+      "Given a technician marks a job as complete, when the status updates, then the customer receives a completion notification with a summary of work performed",
+      "Given the notification infrastructure, when a milestone is triggered, then the notification is delivered within 2 minutes via the customer's preferred channel (email or SMS)"
+    ],
+    "tasks": [
+      "Implement notification service with email and SMS channels",
+      "Define milestone triggers (dispatched, en route, started, completed)",
+      "Build notification templates for each milestone type",
+      "Integrate with work order status change events",
+      "Write integration tests for each milestone notification"
+    ],
+    "dependencies": [
+      "US-034"
+    ],
+    "tags": [
+      "notifications",
+      "email",
+      "sms",
+      "customer-portal",
+      "automation"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-038",
+    "feature_id": "FEAT-016",
+    "epic_id": "EPIC-005",
+    "title": "Configure customer notification preferences",
+    "user_story": "As a customer, I want to choose how I receive notifications (email, SMS, or both), so that I get updates through my preferred communication channel.",
+    "priority": "High",
+    "story_points": 2,
+    "acceptance_criteria": [
+      "Given a customer is logged into the portal, when they navigate to notification settings, then they can select their preferred channel (email, SMS, or both)",
+      "Given a customer selects SMS, when future milestone notifications are triggered, then they are sent via SMS instead of email",
+      "Given a customer wants to stop notifications, when they select Unsubscribe, then all notifications stop and they can re-enable later"
+    ],
+    "tasks": [
+      "Build notification preferences settings page in the customer portal",
+      "Store preferences per customer account",
+      "Route notifications through the preferred channel at send time",
+      "Implement unsubscribe and re-subscribe functionality",
+      "Write tests for preference changes and routing"
+    ],
+    "dependencies": [
+      "US-037"
+    ],
+    "tags": [
+      "web",
+      "customer-portal",
+      "notifications",
+      "preferences"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-039",
+    "feature_id": "FEAT-017",
+    "epic_id": "EPIC-005",
+    "title": "Search and filter historical work orders",
+    "user_story": "As a customer, I want to search and filter my historical work orders by date, asset, and status, so that I can find past service records quickly.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a customer on the portal, when they navigate to the history section, then they can filter work orders by date range, asset, status, and technician",
+      "Given a search query is applied, when the customer submits the filter, then matching work orders are displayed within 3 seconds",
+      "Given a customer has hundreds of work orders, when they paginate through results, then pages load within 3 seconds each"
+    ],
+    "tasks": [
+      "Build history search page with filter controls",
+      "Implement server-side search and filter API with pagination",
+      "Optimize database queries for large datasets (1000+ records per customer)",
+      "Write performance tests for search response time",
+      "Test with simulated large dataset"
+    ],
+    "dependencies": [
+      "US-034"
+    ],
+    "tags": [
+      "web",
+      "customer-portal",
+      "search",
+      "history",
+      "performance"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-040",
+    "feature_id": "FEAT-017",
+    "epic_id": "EPIC-005",
+    "title": "Export work order reports",
+    "user_story": "As a customer, I want to export my work order history as CSV or PDF, so that I can use the data in my own internal reporting systems.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given search results are displayed, when the customer clicks Export CSV, then a correctly formatted CSV file downloads with all visible columns",
+      "Given search results are displayed, when the customer clicks Export PDF, then a formatted PDF report downloads with Contoso Industrial branding",
+      "Given the export contains more than 1000 records, when the customer triggers the export, then it completes within 10 seconds and the file is delivered as a download"
+    ],
+    "tasks": [
+      "Implement CSV export with all work order fields",
+      "Implement PDF export with report layout and branding",
+      "Add export buttons to the work order history page",
+      "Handle large export datasets with server-side generation",
+      "Write tests for CSV and PDF output correctness"
+    ],
+    "dependencies": [
+      "US-039"
+    ],
+    "tags": [
+      "web",
+      "customer-portal",
+      "export",
+      "reporting"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-041",
+    "feature_id": "FEAT-018",
+    "epic_id": "EPIC-006",
+    "title": "Display real-time job status metrics on dispatch dashboard",
+    "user_story": "As a dispatcher, I want to see real-time counts of active, completed, and unassigned work orders on my dashboard, so that I can monitor daily operations at a glance.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a dispatcher opens the operational dashboard, when the page loads, then they see tile counts for active, completed, unassigned, and overdue work orders for the current day",
+      "Given work orders are being completed in the field, when the dashboard auto-refreshes, then metrics update within 60 seconds",
+      "Given the dispatcher selects a different date, when the filter is applied, then all metrics recalculate for the selected date"
+    ],
+    "tasks": [
+      "Design dashboard layout with KPI tiles",
+      "Build real-time data aggregation service for work order metrics",
+      "Implement auto-refresh at configurable intervals (default 60 seconds)",
+      "Add date filter for historical day views",
+      "Write tests for metric calculation accuracy"
+    ],
+    "dependencies": [
+      "US-020"
+    ],
+    "tags": [
+      "web",
+      "dashboard",
+      "analytics",
+      "real-time",
+      "dispatch"
+    ],
+    "notes": "Dashboard must load within 3 seconds per feature DoD."
+  },
+  {
+    "id": "US-042",
+    "feature_id": "FEAT-018",
+    "epic_id": "EPIC-006",
+    "title": "Drill down from dashboard metrics to work order lists",
+    "user_story": "As a dispatcher, I want to click a metric tile and see the filtered list of work orders behind it, so that I can quickly investigate specific categories.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a dispatcher views the dashboard, when they click the Overdue tile, then they see a filtered list of all overdue work orders with details",
+      "Given the filtered list is displayed, when the dispatcher clicks a work order, then they navigate to the full work order detail view",
+      "Given the dispatcher drills down, when they click the back button, then they return to the dashboard with preserved filter state"
+    ],
+    "tasks": [
+      "Implement click handlers on dashboard tiles to navigate to filtered views",
+      "Build filtered work order list page with consistent columns",
+      "Preserve navigation state for back-button support",
+      "Add export option for filtered results",
+      "Write UI tests for drill-down navigation"
+    ],
+    "dependencies": [
+      "US-041"
+    ],
+    "tags": [
+      "web",
+      "dashboard",
+      "analytics",
+      "ux"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-043",
+    "feature_id": "FEAT-019",
+    "epic_id": "EPIC-006",
+    "title": "Display executive KPIs with time range filters",
+    "user_story": "As an operations executive, I want to view key performance indicators like average time-to-resolution and first-time fix rate over configurable time periods, so that I can measure operational performance.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given an executive opens the KPI dashboard, when the page loads, then they see average time-to-resolution, first-time fix rate, technician utilization, and customer satisfaction for the default time period (this month)",
+      "Given the executive selects a different time range, when the filter is applied, then all KPIs recalculate and display within 5 seconds",
+      "Given the time range filter options, when the executive views them, then options include: this week, this month, this quarter, and custom date range"
+    ],
+    "tasks": [
+      "Design executive KPI dashboard layout",
+      "Implement KPI calculation queries (time-to-resolution, first-time fix rate, utilization)",
+      "Build time range filter component with presets and custom range",
+      "Optimize query performance for large datasets within 5-second target",
+      "Write tests validating KPI accuracy against manual calculations"
+    ],
+    "dependencies": [],
+    "tags": [
+      "web",
+      "dashboard",
+      "analytics",
+      "kpi",
+      "executive"
+    ],
+    "notes": "KPI accuracy should be validated against manual calculations per feature DoD."
+  },
+  {
+    "id": "US-044",
+    "feature_id": "FEAT-019",
+    "epic_id": "EPIC-006",
+    "title": "Show trend charts for executive KPIs",
+    "user_story": "As an operations executive, I want to see week-over-week and month-over-month trend charts for key metrics, so that I can identify performance improvements or regressions.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given KPI data is available, when the executive views the dashboard, then trend charts show week-over-week comparisons for all primary KPIs",
+      "Given the executive switches to a monthly view, when the chart updates, then month-over-month trends are displayed as line or bar charts",
+      "Given a trend line shows a significant change, when the executive hovers over a data point, then a tooltip shows the exact value and the percentage change from the prior period"
+    ],
+    "tasks": [
+      "Select and integrate charting library (e.g., Chart.js, Recharts)",
+      "Build trend visualization components for line and bar charts",
+      "Implement week-over-week and month-over-month data aggregation",
+      "Add tooltips with exact values and percentage changes",
+      "Test chart rendering on desktop and tablet"
+    ],
+    "dependencies": [
+      "US-043"
+    ],
+    "tags": [
+      "web",
+      "dashboard",
+      "analytics",
+      "charting",
+      "executive"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-045",
+    "feature_id": "FEAT-020",
+    "epic_id": "EPIC-006",
+    "title": "Display platform component health status",
+    "user_story": "As an IT admin, I want to see the health status of all platform components and integrations on a single dashboard, so that I can detect and respond to issues quickly.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given an IT admin opens the health dashboard, when the page loads, then they see current availability status (healthy/degraded/down) for all platform components and integrations (SAP, Maximo, FleetComplete, Azure AD)",
+      "Given an integration endpoint is down, when the health check detects the failure, then the component status changes to red within 5 minutes",
+      "Given historical health data, when the admin views the 30-day timeline, then uptime/downtime periods are displayed as a color-coded timeline bar"
+    ],
+    "tasks": [
+      "Implement health check probes for all critical endpoints",
+      "Design health dashboard layout with component status cards",
+      "Build 30-day health history timeline visualization",
+      "Store health check results for historical analysis",
+      "Write tests for health check detection and status transitions"
+    ],
+    "dependencies": [],
+    "tags": [
+      "web",
+      "dashboard",
+      "monitoring",
+      "health-check",
+      "infrastructure"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-046",
+    "feature_id": "FEAT-020",
+    "epic_id": "EPIC-006",
+    "title": "Configure automated health alerts",
+    "user_story": "As an IT admin, I want to receive automated alerts when a platform component goes down or becomes degraded, so that I can respond to issues before users are impacted.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given an integration endpoint goes down, when the health check detects the failure, then an alert is sent to the IT team via email and Teams within 5 minutes",
+      "Given the alert is sent, when the admin views it, then it includes the component name, failure type, timestamp, and a link to the health dashboard",
+      "Given the component recovers, when the health check detects recovery, then a resolution notification is sent indicating the issue is resolved"
+    ],
+    "tasks": [
+      "Implement alerting engine triggered by health check state changes",
+      "Configure email and Teams notification channels for alerts",
+      "Build alert templates with component details and dashboard links",
+      "Implement recovery detection and resolution notifications",
+      "Create runbook for common alert responses"
+    ],
+    "dependencies": [
+      "US-045"
+    ],
+    "tags": [
+      "monitoring",
+      "alerts",
+      "teams",
+      "email",
+      "infrastructure"
+    ],
+    "notes": "Runbook creation is part of the feature's definition of done."
+  },
+  {
+    "id": "US-047",
+    "feature_id": "FEAT-021",
+    "epic_id": "EPIC-007",
+    "title": "Implement Azure AD SSO for all platform modules",
+    "user_story": "As a platform user, I want to sign in once using my Contoso Azure AD credentials and access all platform modules without re-authenticating, so that my login experience is seamless.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a user with a valid Contoso Azure AD account, when they navigate to any platform module (web portal, mobile app, admin), then they are authenticated via SSO without entering separate credentials",
+      "Given a user is not in the Contoso Azure AD tenant, when they attempt to access the platform, then access is denied with a clear error message",
+      "Given MFA is enabled in Azure AD, when a user authenticates, then the MFA challenge is presented and the platform proceeds after successful verification"
+    ],
+    "tasks": [
+      "Register the platform application in Contoso Azure AD tenant",
+      "Implement MSAL authentication in the web portal",
+      "Implement MSAL authentication in the mobile app",
+      "Configure redirect URIs and scopes for each platform module",
+      "Write end-to-end tests for SSO flow across modules"
+    ],
+    "dependencies": [],
+    "tags": [
+      "security",
+      "identity",
+      "sso",
+      "entra-id",
+      "authentication"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-048",
+    "feature_id": "FEAT-021",
+    "epic_id": "EPIC-007",
+    "title": "Handle session expiry and token refresh",
+    "user_story": "As a platform user, I want my session to remain active while I am working and transparently refresh, so that I am not unexpectedly logged out during field work.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a user's access token is about to expire, when the token refresh runs, then a new token is obtained silently without user interaction",
+      "Given the refresh token has expired, when the user next interacts with the platform, then they are redirected to Azure AD login and returned to their original page after re-authentication",
+      "Given the user is on the mobile app offline, when they come back online with an expired session, then the app handles re-authentication gracefully without losing unsaved work"
+    ],
+    "tasks": [
+      "Implement silent token refresh using MSAL token cache",
+      "Handle refresh token expiry with graceful redirect to login",
+      "Preserve navigation state across re-authentication",
+      "Test token refresh on mobile during offline-to-online transitions",
+      "Write unit tests for token lifecycle management"
+    ],
+    "dependencies": [
+      "US-047"
+    ],
+    "tags": [
+      "security",
+      "identity",
+      "token-management",
+      "mobile"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-049",
+    "feature_id": "FEAT-022",
+    "epic_id": "EPIC-007",
+    "title": "Configure predefined RBAC roles",
+    "user_story": "As an IT admin, I want to configure predefined roles (Technician, Dispatcher, Supervisor, Finance, Account Manager, IT Admin), so that each user only sees the data and features appropriate to their job function.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given the six predefined roles, when an IT admin views the role management screen, then each role is listed with its associated permissions for data access and feature access",
+      "Given a user with the Technician role, when they access the platform, then they can only see their own assigned work orders and cannot access finance or admin modules",
+      "Given a user with the Finance role, when they access the platform, then they can see the approval queue and cost details but cannot modify dispatch schedules"
+    ],
+    "tasks": [
+      "Define permission matrix for all six roles across all platform features",
+      "Implement role-based authorization middleware in the API layer",
+      "Build admin UI for viewing role definitions and permissions",
+      "Apply role checks to all API endpoints and UI components",
+      "Write tests for each role's access boundaries"
+    ],
+    "dependencies": [
+      "US-047"
+    ],
+    "tags": [
+      "security",
+      "rbac",
+      "authorization",
+      "admin"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-050",
+    "feature_id": "FEAT-022",
+    "epic_id": "EPIC-007",
+    "title": "Sync role assignments with Azure AD groups",
+    "user_story": "As an IT admin, I want user role assignments to sync with Azure AD security groups, so that I can manage access through our existing identity infrastructure.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given an IT admin adds a user to the Dispatcher Azure AD security group, when the user next logs in, then they automatically receive the Dispatcher role permissions",
+      "Given a user is removed from an Azure AD group, when the role sync runs, then their platform role is revoked within 15 minutes",
+      "Given an IT admin views the admin panel, when they check role assignments, then the list shows which Azure AD group each user's role is derived from"
+    ],
+    "tasks": [
+      "Map Azure AD security groups to platform roles",
+      "Implement group membership sync via Microsoft Graph API",
+      "Build admin panel showing role-to-group mappings",
+      "Handle group membership caching with periodic refresh",
+      "Write integration tests for sync scenarios"
+    ],
+    "dependencies": [
+      "US-049"
+    ],
+    "tags": [
+      "security",
+      "rbac",
+      "entra-id",
+      "integration",
+      "admin"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-051",
+    "feature_id": "FEAT-023",
+    "epic_id": "EPIC-007",
+    "title": "Restrict sensitive contract data by role",
+    "user_story": "As a security admin, I want sensitive customer contract data hidden from users below Account Manager level, so that confidential pricing and terms are protected.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a user without Account Manager or higher role, when they view a customer profile, then contract details (pricing, terms, SLAs) are hidden or masked",
+      "Given an Account Manager, when they view a customer profile, then all contract details including pricing and terms are fully visible",
+      "Given a Technician attempts to access a contract data API endpoint directly, when the request is processed, then it returns a 403 Forbidden response"
+    ],
+    "tasks": [
+      "Classify all data fields with sensitivity labels (public, internal, confidential)",
+      "Implement field-level filtering in API responses based on caller's role",
+      "Update UI components to conditionally render sensitive fields",
+      "Add API-level authorization checks for contract data endpoints",
+      "Write penetration tests for role boundary enforcement"
+    ],
+    "dependencies": [
+      "US-049"
+    ],
+    "tags": [
+      "security",
+      "rbac",
+      "data-classification",
+      "api"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-052",
+    "feature_id": "FEAT-023",
+    "epic_id": "EPIC-007",
+    "title": "Log all access attempts to restricted data",
+    "user_story": "As an IT admin, I want all access attempts to sensitive data logged with full audit details, so that I can investigate potential unauthorized access.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given any user attempts to access restricted data, when the request is processed, then an audit log entry records user ID, timestamp, resource accessed, and outcome (allowed or denied)",
+      "Given an admin queries the audit log, when they filter by date range or user, then matching entries are returned within 5 seconds",
+      "Given a denied access attempt, when it occurs, then the attempt is flagged as a potential security event and included in the daily security report"
+    ],
+    "tasks": [
+      "Implement audit logging middleware for restricted data endpoints",
+      "Store audit logs in a tamper-proof append-only store",
+      "Build audit log query UI for IT admins",
+      "Implement daily security report aggregating denied access attempts",
+      "Write tests for audit log completeness and accuracy"
+    ],
+    "dependencies": [
+      "US-051"
+    ],
+    "tags": [
+      "security",
+      "audit",
+      "logging",
+      "compliance"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-053",
+    "feature_id": "FEAT-024",
+    "epic_id": "EPIC-008",
+    "title": "Store compliance documents with encryption and metadata",
+    "user_story": "As a field technician, I want my compliance photos, signatures, and checklists stored securely with metadata tagging, so that they are protected and traceable to the originating work order.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician submits a work order with compliance documents, when the documents are stored, then each is encrypted at rest and tagged with work order ID, timestamp, and technician ID",
+      "Given a compliance document is uploaded, when it is saved, then it is immutable and cannot be modified or deleted by non-admin users",
+      "Given a stored document, when an admin retrieves it, then the metadata (work order, technician, timestamp) is available alongside the document"
+    ],
+    "tasks": [
+      "Configure Azure Blob Storage with encryption at rest in US region",
+      "Implement metadata tagging on upload (work order ID, technician ID, timestamp, document type)",
+      "Set immutability policies to prevent modification or deletion",
+      "Build document upload service handling photos up to 20MB",
+      "Write integration tests for upload, metadata, and immutability"
+    ],
+    "dependencies": [
+      "US-061"
+    ],
+    "tags": [
+      "compliance",
+      "storage",
+      "encryption",
+      "azure-blob",
+      "us-residency"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-054",
+    "feature_id": "FEAT-024",
+    "epic_id": "EPIC-008",
+    "title": "Enforce US data residency for compliance storage",
+    "user_story": "As an IT admin, I want all compliance documents stored exclusively in US Azure regions, so that we meet our data residency requirements for regulated customers.",
+    "priority": "High",
+    "story_points": 2,
+    "acceptance_criteria": [
+      "Given compliance documents are stored, when the storage account location is audited, then it is confirmed to be in a US Azure region (e.g., East US, West US)",
+      "Given a deployment attempt to a non-US region, when Azure Policy evaluates the deployment, then it is denied and the violation is logged",
+      "Given an annual compliance audit, when the auditor reviews storage configuration, then documented evidence of US-only residency is available"
+    ],
+    "tasks": [
+      "Verify Azure Blob Storage account is provisioned in a US region",
+      "Implement Azure Policy to deny non-US storage deployments",
+      "Document data residency configuration for compliance audits",
+      "Write automated compliance check tests"
+    ],
+    "dependencies": [
+      "US-053"
+    ],
+    "tags": [
+      "compliance",
+      "us-residency",
+      "azure-policy",
+      "governance"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-055",
+    "feature_id": "FEAT-025",
+    "epic_id": "EPIC-008",
+    "title": "Configure seven-year document retention policies",
+    "user_story": "As an IT admin, I want automated retention policies ensuring compliance documents are kept for a minimum of seven years, so that we meet regulatory retention mandates.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a compliance document stored in the system, when the retention period is checked, then it is set to a minimum of seven years from the creation date",
+      "Given a document has reached its retention expiry, when the lifecycle policy runs, then it is archived (not deleted) and an admin is notified",
+      "Given an admin queries retention status, when they view the report, then they see how many documents are active, approaching expiry, and expired"
+    ],
+    "tasks": [
+      "Configure Azure Storage lifecycle management rules for 7-year retention",
+      "Implement retention metadata on each document (creation date, expiry date)",
+      "Build retention status report for admin dashboard",
+      "Set up notifications for approaching retention expiry",
+      "Write tests simulating 7-year lifecycle with accelerated dates"
+    ],
+    "dependencies": [
+      "US-053"
+    ],
+    "tags": [
+      "compliance",
+      "retention",
+      "azure-storage",
+      "lifecycle"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-056",
+    "feature_id": "FEAT-025",
+    "epic_id": "EPIC-008",
+    "title": "Implement searchable audit trail for compliance records",
+    "user_story": "As an IT admin, I want a searchable audit trail tracking who created, accessed, or modified compliance records, so that we can demonstrate full traceability during audits.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given any user accesses a compliance document, when the access occurs, then an audit log entry is created with user ID, timestamp, document ID, and action type (viewed, downloaded)",
+      "Given an IT admin queries the audit trail, when they search by work order or date range, then all access and modification events are returned within 5 seconds",
+      "Given the audit trail data, when it is stored, then it is in a tamper-proof, append-only log separate from the compliance documents themselves"
+    ],
+    "tasks": [
+      "Implement audit event logging for all compliance document operations",
+      "Store audit logs in tamper-proof append-only storage (Azure Table Storage or Log Analytics)",
+      "Build audit trail search UI with work order and date range filters",
+      "Ensure audit logs are retainable for the same 7-year retention period",
+      "Write integration tests for audit completeness"
+    ],
+    "dependencies": [
+      "US-055"
+    ],
+    "tags": [
+      "compliance",
+      "audit",
+      "logging",
+      "search"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-057",
+    "feature_id": "FEAT-026",
+    "epic_id": "EPIC-009",
+    "title": "Send adaptive card notifications in Teams",
+    "user_story": "As a field technician, I want to receive work order notifications as adaptive cards in Microsoft Teams, so that I can see assignment details directly in the app I already use.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician is assigned a new work order, when the assignment is saved, then they receive a Teams message with an adaptive card showing work order summary (customer, location, priority, scheduled time)",
+      "Given the notification is received on the iOS Teams client, when the technician views it, then the adaptive card renders correctly with all fields visible",
+      "Given the notification is received on the Android Teams client, when the technician views it, then the adaptive card renders correctly with all fields visible"
+    ],
+    "tasks": [
+      "Register Teams bot/connector in Azure Bot Framework",
+      "Design adaptive card templates for work order notifications",
+      "Implement server-side notification dispatch to Teams via Bot Framework",
+      "Test adaptive card rendering on desktop, iOS, and Android Teams clients",
+      "Write integration tests for notification delivery and rendering"
+    ],
+    "dependencies": [
+      "US-012"
+    ],
+    "tags": [
+      "teams",
+      "notifications",
+      "adaptive-cards",
+      "bot-framework"
+    ],
+    "notes": "Notification delivery target is under 60 seconds per feature DoD."
+  },
+  {
+    "id": "US-058",
+    "feature_id": "FEAT-026",
+    "epic_id": "EPIC-009",
+    "title": "Deliver approval request notifications via Teams",
+    "user_story": "As a supervisor, I want to receive approval request notifications in Teams with approve/reject action buttons, so that I can act on work orders without switching to the portal.",
+    "priority": "High",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given a work order enters the supervisor approval queue, when the notification is triggered, then the supervisor receives an adaptive card in Teams with approve and reject buttons",
+      "Given the supervisor clicks Approve on the Teams card, when the action is processed, then the work order advances to finance review and a confirmation message replaces the card",
+      "Given the supervisor clicks Reject, when they provide a reason in the dialog, then the work order is returned to the technician and a confirmation message is shown"
+    ],
+    "tasks": [
+      "Extend adaptive card template with approve/reject action buttons",
+      "Implement Bot Framework action handler for approval actions",
+      "Update work order status via API on approval/rejection",
+      "Replace the original card with a confirmation card after action",
+      "Write end-to-end tests for the Teams approval workflow"
+    ],
+    "dependencies": [
+      "US-057",
+      "US-016"
+    ],
+    "tags": [
+      "teams",
+      "notifications",
+      "approval",
+      "adaptive-cards",
+      "workflow"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-059",
+    "feature_id": "FEAT-027",
+    "epic_id": "EPIC-009",
+    "title": "View work order details in Teams task module",
+    "user_story": "As a field technician, I want to view full work order details directly in a Teams task module, so that I can get all the information I need without switching apps.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician receives a work order notification in Teams, when they click View Details, then a Teams task module opens showing the full work order with customer, asset, and task information",
+      "Given the task module is open, when the technician views attached documents or photos, then they are displayed inline within the task module",
+      "Given the task module is rendered on a mobile Teams client, when the technician scrolls, then all information is accessible with responsive layout"
+    ],
+    "tasks": [
+      "Implement Teams task module with work order detail view",
+      "Build responsive layout for task module across desktop and mobile",
+      "Fetch work order data via platform API from within Teams context",
+      "Display linked documents and photos inline",
+      "Test on iOS and Android Teams mobile clients"
+    ],
+    "dependencies": [
+      "US-057"
+    ],
+    "tags": [
+      "teams",
+      "task-module",
+      "mobile",
+      "work-order"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-060",
+    "feature_id": "FEAT-027",
+    "epic_id": "EPIC-009",
+    "title": "Update work order status from within Teams",
+    "user_story": "As a field technician, I want to accept, flag, or mark myself en route directly from Teams, so that I can update my status without opening the dedicated mobile app.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a technician viewing a work order in Teams, when they tap Accept, then the work order status updates in the platform in real time and the card refreshes",
+      "Given a technician viewing a work order in Teams, when they tap Mark En Route, then the status updates and the customer is notified of the technician's departure",
+      "Given the technician has no connectivity, when they attempt an action in Teams, then the action is queued and a message indicates it will be processed when connectivity returns"
+    ],
+    "tasks": [
+      "Add Accept, Flag, and Mark En Route action buttons to Teams task module",
+      "Implement Bot Framework action handlers for each status update",
+      "Sync status changes to the platform backend API",
+      "Handle offline scenarios with queued action messaging",
+      "Write end-to-end tests for all status update actions from Teams"
+    ],
+    "dependencies": [
+      "US-059"
+    ],
+    "tags": [
+      "teams",
+      "work-order",
+      "status-update",
+      "offline"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-061",
+    "feature_id": "FEAT-028",
+    "epic_id": "EPIC-010",
+    "title": "Provision Azure infrastructure with IaC",
+    "user_story": "As an IT admin, I want the Azure hosting infrastructure defined and provisioned using Infrastructure as Code, so that environments are reproducible and version-controlled.",
+    "priority": "Critical",
+    "story_points": 8,
+    "acceptance_criteria": [
+      "Given the infrastructure requirements, when the IaC templates are executed, then all required Azure resources (App Service, SQL, Storage, etc.) are provisioned in US Azure regions",
+      "Given the IaC templates are version controlled, when a new environment is needed, then it can be provisioned by running the templates with environment-specific parameters",
+      "Given the infrastructure is deployed, when an audit checks resource locations, then all resources hosting customer data are confirmed in US regions"
+    ],
+    "tasks": [
+      "Design Azure architecture and resource topology",
+      "Write Bicep or Terraform templates for all platform resources",
+      "Configure networking (VNet, NSGs, firewall rules)",
+      "Set up CI/CD pipeline for infrastructure deployment",
+      "Document cost estimate and get approval",
+      "Write integration tests for infrastructure provisioning"
+    ],
+    "dependencies": [],
+    "tags": [
+      "infrastructure",
+      "azure",
+      "iac",
+      "bicep",
+      "terraform"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-062",
+    "feature_id": "FEAT-028",
+    "epic_id": "EPIC-010",
+    "title": "Enforce US data residency via Azure Policy",
+    "user_story": "As an IT admin, I want Azure Policy to enforce that all resources hosting customer data are deployed only in US regions, so that data residency requirements are guaranteed at the platform level.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given an Azure Policy is assigned to the subscription, when any resource deployment targets a non-US region, then the deployment is denied and the violation is logged",
+      "Given the policy is active, when an admin views the compliance dashboard, then they see 100% compliance for resource location constraints",
+      "Given a new resource is deployed to a US region, when the policy evaluates, then the deployment is allowed without delay"
+    ],
+    "tasks": [
+      "Define Azure Policy for allowed resource locations (US regions only)",
+      "Assign policy to the subscription/resource group scope",
+      "Configure policy compliance alerts for violations",
+      "Document policy configuration for audit purposes",
+      "Write tests to verify deny behavior on non-US deployments"
+    ],
+    "dependencies": [
+      "US-061"
+    ],
+    "tags": [
+      "infrastructure",
+      "azure-policy",
+      "us-residency",
+      "governance"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-063",
+    "feature_id": "FEAT-029",
+    "epic_id": "EPIC-010",
+    "title": "Enable parallel operation with legacy system",
+    "user_story": "As an IT admin, I want the new platform to run alongside the legacy system during the pilot phase, so that we can validate the new system without disrupting current operations.",
+    "priority": "Critical",
+    "story_points": 8,
+    "acceptance_criteria": [
+      "Given the pilot region is identified, when the new platform is deployed, then both legacy and new systems operate simultaneously for the pilot group of ~40 technicians",
+      "Given work orders are created in either system during parallel operation, when data is synced, then both systems reflect consistent work order status within 15 minutes",
+      "Given a critical issue is found in the new system, when the rollback is initiated, then the legacy system resumes full operation within 1 hour"
+    ],
+    "tasks": [
+      "Design data synchronization bridge between legacy and new systems",
+      "Implement bidirectional work order sync for the pilot region",
+      "Configure user routing (pilot users → new system, others → legacy)",
+      "Build monitoring dashboard for parallel operation health",
+      "Test parallel operation with simulated pilot region data",
+      "Write rollback procedures and test rollback execution"
+    ],
+    "dependencies": [
+      "US-061"
+    ],
+    "tags": [
+      "infrastructure",
+      "migration",
+      "parallel-operation",
+      "legacy"
+    ],
+    "notes": "This is a critical risk mitigation story. Rollback procedures must be tested before pilot launch."
+  },
+  {
+    "id": "US-064",
+    "feature_id": "FEAT-029",
+    "epic_id": "EPIC-010",
+    "title": "Create cutover runbook and rollback plan",
+    "user_story": "As an IT admin, I want a documented cutover runbook and rollback plan, so that the transition from legacy to new platform is controlled and reversible.",
+    "priority": "Critical",
+    "story_points": 3,
+    "acceptance_criteria": [
+      "Given the pilot validation is complete, when the team reviews the cutover runbook, then it contains step-by-step instructions for migrating each region from legacy to new platform",
+      "Given a cutover is in progress, when an issue is detected, then the rollback section provides clear steps to revert to the legacy system within 1 hour",
+      "Given the runbook is reviewed, when stakeholders (IT, Operations, Microsoft team) sign off, then the cutover is authorized to proceed"
+    ],
+    "tasks": [
+      "Document step-by-step cutover procedure for each region",
+      "Document rollback procedure with estimated recovery time",
+      "Define go/no-go criteria for cutover",
+      "Conduct tabletop rehearsal of cutover and rollback",
+      "Get sign-off from IT Director and VP of Operations"
+    ],
+    "dependencies": [
+      "US-063"
+    ],
+    "tags": [
+      "infrastructure",
+      "migration",
+      "documentation",
+      "runbook"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-065",
+    "feature_id": "FEAT-030",
+    "epic_id": "EPIC-010",
+    "title": "Build SAP S/4HANA REST API integration layer",
+    "user_story": "As an IT admin, I want a modern REST API integration layer for SAP S/4HANA that handles financials, inventory, and invoicing, so that the platform communicates with SAP reliably without legacy stored procedures.",
+    "priority": "Critical",
+    "story_points": 13,
+    "acceptance_criteria": [
+      "Given the integration layer is deployed, when the platform sends financial data to SAP, then invoices are created correctly in SAP S/4HANA",
+      "Given the integration layer processes inventory queries, when a technician checks parts availability, then accurate stock levels are returned within 5 seconds",
+      "Given an API call to SAP fails, when the integration layer encounters the error, then it retries with exponential backoff and logs the failure for IT monitoring"
+    ],
+    "tasks": [
+      "Design integration architecture with API gateway and service layer",
+      "Implement REST client for SAP S/4HANA OData APIs (financials module)",
+      "Implement REST client for SAP S/4HANA OData APIs (inventory module)",
+      "Implement REST client for SAP S/4HANA OData APIs (invoicing module)",
+      "Build request/response mapping and transformation layer",
+      "Implement API versioning (v1 baseline)",
+      "Test all integration paths against SAP sandbox environment",
+      "Write comprehensive API documentation"
+    ],
+    "dependencies": [
+      "US-061"
+    ],
+    "tags": [
+      "backend",
+      "sap-integration",
+      "api",
+      "infrastructure",
+      "integration"
+    ],
+    "notes": "13-point story — candidate for splitting into separate stories per SAP module (financials, inventory, invoicing). This is the highest-complexity integration work and the architectural foundation for FEAT-012, FEAT-013, and FEAT-014."
+  },
+  {
+    "id": "US-066",
+    "feature_id": "FEAT-030",
+    "epic_id": "EPIC-010",
+    "title": "Implement retry and circuit breaker patterns for SAP",
+    "user_story": "As an IT admin, I want the SAP integration to use retry and circuit breaker patterns, so that transient failures are handled gracefully without cascading across the platform.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a transient SAP API failure, when the integration layer retries, then it uses exponential backoff with a maximum of 3 retries before failing",
+      "Given SAP is experiencing sustained downtime, when the circuit breaker activates, then subsequent calls are immediately rejected with a friendly error until SAP recovers",
+      "Given the circuit breaker is open, when SAP recovers, then the circuit breaker transitions to half-open and allows test requests before fully closing"
+    ],
+    "tasks": [
+      "Implement retry policy with exponential backoff (Polly or equivalent)",
+      "Implement circuit breaker pattern with configurable thresholds",
+      "Log all retry attempts and circuit breaker state changes",
+      "Configure health check integration to detect SAP recovery",
+      "Write tests for retry, circuit breaker open, half-open, and close states"
+    ],
+    "dependencies": [
+      "US-065"
+    ],
+    "tags": [
+      "backend",
+      "sap-integration",
+      "resilience",
+      "circuit-breaker"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-067",
+    "feature_id": "FEAT-030",
+    "epic_id": "EPIC-010",
+    "title": "Validate SAP integration against sandbox environment",
+    "user_story": "As an IT admin, I want the SAP integration validated against a sandbox environment before production deployment, so that we have confidence the integration works correctly.",
+    "priority": "Critical",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given the SAP sandbox is available, when the integration test suite runs, then all financials, inventory, and invoicing API calls complete successfully with expected results",
+      "Given sample work orders with realistic data, when the end-to-end integration test runs, then data flows correctly from work order completion through to SAP invoice creation",
+      "Given the test run is complete, when the QA team reviews the results, then a test report documents pass/fail status for each integration scenario"
+    ],
+    "tasks": [
+      "Provision SAP sandbox access and test data",
+      "Write integration test suite covering all SAP API endpoints",
+      "Execute end-to-end tests with realistic work order data",
+      "Generate test report with pass/fail results per scenario",
+      "Remediate any failures and retest"
+    ],
+    "dependencies": [
+      "US-065",
+      "US-066"
+    ],
+    "tags": [
+      "testing",
+      "sap-integration",
+      "qa",
+      "sandbox"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "US-068",
+    "feature_id": "FEAT-031",
+    "epic_id": "EPIC-010",
+    "title": "Generate and publish API documentation",
+    "user_story": "As an IT admin, I want comprehensive API documentation auto-generated and published through a developer portal, so that internal teams can understand, test, and integrate with the platform.",
+    "priority": "High",
+    "story_points": 5,
+    "acceptance_criteria": [
+      "Given a developer accessing the API portal, when they browse available endpoints, then they see complete request/response schemas with examples for every custom API",
+      "Given API documentation, when a developer reads an endpoint description, then they can successfully make a test call using the provided examples and a Try It button",
+      "Given a new API endpoint is deployed, when the CI/CD pipeline runs, then the documentation is automatically updated without manual intervention"
+    ],
+    "tasks": [
+      "Add OpenAPI/Swagger annotations to all custom API endpoints",
+      "Configure auto-generation of OpenAPI specs in the CI/CD pipeline",
+      "Deploy developer portal (Azure API Management or Swagger UI)",
+      "Add Try It functionality for interactive API testing",
+      "Review documentation accuracy with the development team"
+    ],
+    "dependencies": [
+      "US-065"
+    ],
+    "tags": [
+      "documentation",
+      "api",
+      "developer-portal",
+      "openapi",
+      "ci-cd"
+    ],
+    "notes": ""
+  }
+]

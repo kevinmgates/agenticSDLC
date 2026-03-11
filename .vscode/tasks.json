@@ -1,0 +1,125 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🎬 Stage 0: Open Transcript",
+      "type": "shell",
+      "command": "${input:openTranscript}",
+      "group": "none",
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📋 Stage 1→2: Extract Requirements",
+      "type": "shell",
+      "command": "echo 'Open Copilot Chat and run: @workspace #file:prompts/01-extract-requirements.md'",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🗂️ Stage 2→3A: Generate Epics",
+      "type": "shell",
+      "command": "echo 'Open Copilot Chat and run: @workspace #file:prompts/02-generate-epics.md'",
+      "group": "none",
+      "dependsOn": "📋 Stage 1→2: Extract Requirements",
+      "dependsOrder": "sequence",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧩 Stage 2→3B: Generate Features",
+      "type": "shell",
+      "command": "echo 'Open Copilot Chat and run: @workspace #file:prompts/03-generate-features.md'",
+      "group": "none",
+      "dependsOn": "🗂️ Stage 2→3A: Generate Epics",
+      "dependsOrder": "sequence",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📝 Stage 3: Generate User Stories",
+      "type": "shell",
+      "command": "echo 'Open Copilot Chat and run: @workspace #file:prompts/04-generate-user-stories.md'",
+      "group": "none",
+      "dependsOn": "🧩 Stage 2→3B: Generate Features",
+      "dependsOrder": "sequence",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🐙 Stage 4A: Push to GitHub (MCP)",
+      "type": "shell",
+      "command": "echo 'Switch Copilot to Agent Mode and run: @workspace #file:prompts/05-push-to-github.md'",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔷 Stage 4B: Push to Azure DevOps (MCP)",
+      "type": "shell",
+      "command": "echo 'Switch Copilot to Agent Mode and run: @workspace #file:prompts/06-push-to-ado.md'",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "✅ Validate: Check All Stage Outputs",
+      "type": "shell",
+      "command": "echo '--- Checking stage outputs ---' && echo 'Stage 2:' && ls stages/02-requirements/ 2>/dev/null || echo '  [EMPTY]' && echo 'Stage 3:' && ls stages/03-backlog/ 2>/dev/null || echo '  [EMPTY]' && echo 'Stage 4:' && ls stages/04-devops/ 2>/dev/null || echo '  [EMPTY]'",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔄 Reset: Clear Generated Outputs",
+      "type": "shell",
+      "command": "rm -f stages/02-requirements/requirements.md stages/03-backlog/*.json stages/04-devops/*.md && echo 'Outputs cleared. Ready for fresh demo run.'",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "openTranscript",
+      "type": "promptString",
+      "description": "Press Enter to open the transcript file in VS Code",
+      "default": "code stages/01-transcript/meeting-transcript.md"
+    }
+  ]
+}

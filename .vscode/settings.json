@@ -1,0 +1,46 @@
+{
+  // GitHub Copilot agent mode settings
+  "github.copilot.chat.agent.enabled": true,
+
+  // MCP Server configuration
+  // These tell Copilot Agent which MCP servers are available
+  "mcp": {
+    "servers": {
+      "github": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-github"],
+        "env": {
+          // Set GITHUB_TOKEN in your environment or .env file
+          // DO NOT commit tokens to source control
+          "GITHUB_TOKEN": "${env:GITHUB_TOKEN}"
+        }
+      },
+      "azure-devops": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@azure-devops/mcp-server"],
+        "env": {
+          // Set these in your environment or .env file
+          // DO NOT commit tokens to source control
+          "AZURE_DEVOPS_ORG_URL": "${env:AZURE_DEVOPS_ORG_URL}",
+          "AZURE_DEVOPS_PAT": "${env:AZURE_DEVOPS_PAT}"
+        }
+      }
+    }
+  },
+
+  // Recommended editor settings for this project
+  "editor.wordWrap": "on",
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.md": "markdown"
+  },
+  "markdown.preview.breaks": true,
+
+  // Keep generated JSON files readable
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.tabSize": 2
+  }
+}

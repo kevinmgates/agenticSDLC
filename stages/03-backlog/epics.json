@@ -1,0 +1,260 @@
+[
+  {
+    "id": "EPIC-001",
+    "title": "Mobile Field Technician Experience",
+    "description": "Deliver a cross-platform mobile application for field technicians that supports iOS and Android, works fully offline with reliable data synchronization, and enables digital work order completion, photo capture, digital sign-offs, and compliance checklists on-site.",
+    "business_value": "Eliminates paper-based processes and manual data re-entry, reducing the work-order-to-invoice cycle from 2-3 weeks to days and improving technician productivity.",
+    "priority": "Critical",
+    "estimated_size": "XL",
+    "linked_requirements": [
+      "FR-004",
+      "FR-008",
+      "FR-009",
+      "FR-010",
+      "NFR-001",
+      "NFR-008"
+    ],
+    "tags": [
+      "mobile",
+      "offline",
+      "cross-platform",
+      "technician"
+    ],
+    "acceptance_criteria": [
+      "Field technicians can view, update, and complete work orders on iOS and Android devices",
+      "The app functions fully offline and synchronizes data with conflict resolution when connectivity is restored",
+      "Technicians can capture photos, digital signatures, and compliance checklists on-site",
+      "The app supports 200 concurrent field technicians across the full deployment"
+    ]
+  },
+  {
+    "id": "EPIC-002",
+    "title": "Work Order Management & Approval Workflow",
+    "description": "Implement a digital work order lifecycle system supporting creation from multiple triggers (customer calls, maintenance contracts, future IoT alerts), asset linkage to IBM Maximo, and a two-level approval workflow (supervisor then finance) before invoicing.",
+    "business_value": "Streamlines the end-to-end work order process, eliminating manual re-entry bottlenecks and reducing the invoice cycle from weeks to days.",
+    "priority": "Critical",
+    "estimated_size": "XL",
+    "linked_requirements": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "INT-003"
+    ],
+    "tags": [
+      "work-order",
+      "workflow",
+      "approval",
+      "maximo"
+    ],
+    "acceptance_criteria": [
+      "Work orders can be created from customer calls and maintenance contract triggers",
+      "Work orders are linked to specific customer assets in IBM Maximo",
+      "Completed work orders pass through supervisor sign-off and finance review before invoicing",
+      "The entire workflow is digital with no paper forms or manual data re-entry required"
+    ]
+  },
+  {
+    "id": "EPIC-003",
+    "title": "Scheduling, Dispatch & Fleet Tracking",
+    "description": "Replace the manual whiteboard-and-phone-call dispatch process with an automated scheduling and dispatch system. Integrate with FleetComplete for real-time technician location tracking to optimize job assignment.",
+    "business_value": "Automates dispatch operations, reduces scheduling errors, and enables location-aware job assignment — directly improving response times and technician utilization.",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": [
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "INT-002"
+    ],
+    "tags": [
+      "dispatch",
+      "scheduling",
+      "fleet",
+      "real-time"
+    ],
+    "acceptance_criteria": [
+      "Dispatchers can schedule and assign work orders through an automated digital interface",
+      "The dispatch interface displays real-time technician locations from FleetComplete",
+      "The dispatch UI is intuitive enough for the existing team to use with minimal training",
+      "Manual whiteboard and phone-call processes are fully replaced"
+    ]
+  },
+  {
+    "id": "EPIC-004",
+    "title": "Parts & Inventory Integration",
+    "description": "Provide technicians and dispatchers with real-time parts availability through SAP S/4HANA integration. Enable proactive parts verification before dispatch to reduce second-visit rates.",
+    "business_value": "Reduces the 30% first-visit failure rate caused by parts unavailability, improving customer satisfaction and eliminating costly return trips.",
+    "priority": "High",
+    "estimated_size": "L",
+    "linked_requirements": [
+      "FR-011",
+      "FR-012",
+      "INT-001"
+    ],
+    "tags": [
+      "parts",
+      "inventory",
+      "sap",
+      "integration"
+    ],
+    "acceptance_criteria": [
+      "Technicians can check real-time parts availability from SAP before traveling to a job site",
+      "The system proactively verifies or suggests required parts for a work order before dispatch",
+      "SAP integration uses modern API-based approaches replacing legacy stored procedures",
+      "First-time fix rate improvement is measurable through platform analytics"
+    ]
+  },
+  {
+    "id": "EPIC-005",
+    "title": "Customer Self-Service Portal & Notifications",
+    "description": "Build a customer-facing self-service portal where customers can view work order status in real time. Implement automated status notifications (technician en route, job complete) to replace manual dispatcher calls.",
+    "business_value": "Addresses a direct competitive gap that caused a lost contract renewal, and reduces dispatcher workload by automating customer communications.",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": [
+      "FR-013",
+      "FR-014"
+    ],
+    "tags": [
+      "customer-portal",
+      "notifications",
+      "self-service"
+    ],
+    "acceptance_criteria": [
+      "Customers can log in and view the real-time status of their work orders",
+      "Automated notifications are sent at key milestones (technician dispatched, en route, job complete)",
+      "The portal is accessible via web browser without requiring app installation",
+      "Manual status update calls from dispatchers to customers are eliminated"
+    ]
+  },
+  {
+    "id": "EPIC-006",
+    "title": "Reporting, Analytics & Dashboards",
+    "description": "Deliver three tiers of dashboards: operational dashboards for the dispatch team (real-time job status, technician utilization), executive KPI dashboards for leadership (time-to-resolution, first-time fix rate), and system health monitoring for IT.",
+    "business_value": "Provides operational visibility that does not exist today, enabling data-driven decisions across dispatch, leadership, and IT operations.",
+    "priority": "High",
+    "estimated_size": "L",
+    "linked_requirements": [
+      "FR-015",
+      "FR-016",
+      "FR-017"
+    ],
+    "tags": [
+      "analytics",
+      "dashboards",
+      "kpi",
+      "monitoring"
+    ],
+    "acceptance_criteria": [
+      "Dispatch team has access to real-time operational dashboards showing job status and technician utilization",
+      "Executive leadership can view KPI dashboards including average time-to-resolution and first-time fix rate",
+      "IT team has system health monitoring dashboards with alerting capabilities",
+      "All dashboards update in near-real-time without manual data pulls"
+    ]
+  },
+  {
+    "id": "EPIC-007",
+    "title": "Identity, Security & Access Control",
+    "description": "Implement Azure AD (Entra ID) SSO integration with Contoso's existing tenant and configure role-based access control (RBAC) to restrict data access by role. Ensure sensitive customer contract data is only accessible to account managers and above.",
+    "business_value": "Secures the platform with enterprise-grade identity management while ensuring compliance with data access policies and simplifying user authentication.",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": [
+      "NFR-002",
+      "NFR-003",
+      "INT-005"
+    ],
+    "tags": [
+      "security",
+      "identity",
+      "rbac",
+      "sso",
+      "entra-id"
+    ],
+    "acceptance_criteria": [
+      "All users authenticate via Azure AD SSO using Contoso's existing tenant",
+      "Role-based access control restricts technicians to only the data they need",
+      "Sensitive customer contract data is accessible only to account managers and above",
+      "No separate credentials or login systems are required"
+    ]
+  },
+  {
+    "id": "EPIC-008",
+    "title": "Compliance, Document Retention & Audit Trail",
+    "description": "Implement document retention and audit trail capabilities for compliance documentation including photos, digital sign-offs, and checklists. Ensure all compliance records are retained for a minimum of seven years with full traceability.",
+    "business_value": "Meets regulatory requirements for utilities and oil & gas customers, protecting Contoso from compliance risks and supporting long-term document retention mandates.",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": [
+      "FR-019",
+      "FR-020",
+      "NFR-004"
+    ],
+    "tags": [
+      "compliance",
+      "audit",
+      "retention",
+      "regulated"
+    ],
+    "acceptance_criteria": [
+      "All on-site compliance documentation (photos, sign-offs, checklists) is captured digitally and stored with audit trail metadata",
+      "Compliance records are retained for a minimum of seven years",
+      "All customer data resides within the United States",
+      "Audit trail supports traceability of who created, modified, or accessed compliance records"
+    ]
+  },
+  {
+    "id": "EPIC-009",
+    "title": "Teams Integration & Technician Notifications",
+    "description": "Integrate the platform with Microsoft Teams to deliver work order notifications and enable technician interaction directly within Teams. Leverage the existing Teams adoption among field technicians to drive platform adoption.",
+    "business_value": "Maximizes user adoption by meeting technicians where they already work — in Microsoft Teams — reducing training requirements and accelerating rollout.",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": [
+      "FR-018",
+      "INT-004"
+    ],
+    "tags": [
+      "teams",
+      "notifications",
+      "collaboration",
+      "adoption"
+    ],
+    "acceptance_criteria": [
+      "Technicians receive work order notifications in Microsoft Teams",
+      "Technicians can view and interact with work orders directly from Teams",
+      "Teams integration works on both iOS and Android Teams mobile clients",
+      "No additional app installation is required beyond the existing Teams app"
+    ]
+  },
+  {
+    "id": "EPIC-010",
+    "title": "Platform Infrastructure & Phased Rollout",
+    "description": "Establish the Azure-native hosting infrastructure, configure US data residency, build comprehensive API documentation for custom components, and implement a phased rollout strategy supporting parallel operation with the legacy system during transition.",
+    "business_value": "Ensures the platform meets enterprise infrastructure requirements and enables a low-risk migration from the legacy system before the Q4 2026 end-of-life deadline.",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": [
+      "NFR-004",
+      "NFR-005",
+      "NFR-006",
+      "NFR-007",
+      "INT-001"
+    ],
+    "tags": [
+      "infrastructure",
+      "azure",
+      "migration",
+      "api",
+      "rollout"
+    ],
+    "acceptance_criteria": [
+      "The platform is hosted on Microsoft Azure with all customer data residing in the US",
+      "The system supports parallel operation with the legacy system during phased rollout",
+      "Comprehensive API documentation is published for all custom-built components",
+      "The SAP S/4HANA integration is rebuilt using modern API-based approaches",
+      "Pilot deployment for ~40 technicians in the highest-volume region is completed by month 6"
+    ]
+  }
+]

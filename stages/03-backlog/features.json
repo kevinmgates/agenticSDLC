@@ -1,0 +1,707 @@
+[
+  {
+    "id": "FEAT-001",
+    "epic_id": "EPIC-001",
+    "title": "Cross-Platform Mobile App Shell & Navigation",
+    "description": "Build the foundational mobile application framework supporting iOS and Android with shared navigation, authentication flow, and responsive layout optimized for both phones and ruggedized tablets.",
+    "user_persona": "Field Technician",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": ["FR-008", "NFR-008"],
+    "dependencies": ["FEAT-021"],
+    "acceptance_criteria": [
+      "Given a field technician with an iOS or Android device, when they launch the app, then they see a login screen integrated with Azure AD SSO",
+      "Given an authenticated technician, when they navigate the app, then all primary functions are accessible within two taps from the home screen",
+      "Given a technician using a phone or tablet, when they view any screen, then the layout adapts responsively to the device form factor"
+    ],
+    "definition_of_done": [
+      "App builds and runs on iOS 16+ and Android 13+",
+      "UI tested on both phone and tablet form factors",
+      "Accessibility audit passed (WCAG 2.1 AA)",
+      "Performance baseline established (cold start < 3 seconds)",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-002",
+    "epic_id": "EPIC-001",
+    "title": "Offline Data Storage & Sync Engine",
+    "description": "Implement a local data persistence layer and background synchronization engine that allows technicians to work without connectivity and reliably syncs all changes when a connection is restored, including conflict resolution.",
+    "user_persona": "Field Technician",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": ["FR-009", "NFR-001"],
+    "dependencies": ["FEAT-001"],
+    "acceptance_criteria": [
+      "Given a technician in an area with no connectivity, when they complete a work order, then all data is persisted locally on the device",
+      "Given a technician whose device regains connectivity, when the sync engine runs, then all locally stored changes are uploaded to the server",
+      "Given two users editing the same work order offline, when both sync, then the system applies conflict resolution rules and notifies affected users"
+    ],
+    "definition_of_done": [
+      "Offline storage supports all work order data types including photos",
+      "Sync engine tested with simulated network interruptions",
+      "Conflict resolution logic documented and unit tested",
+      "Load tested with 200 concurrent sync operations",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-003",
+    "epic_id": "EPIC-001",
+    "title": "Mobile Work Order Completion",
+    "description": "Enable field technicians to view, update, and mark work orders as complete directly from the mobile app, replacing paper forms with a digital workflow that captures all required fields.",
+    "user_persona": "Field Technician",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-004", "FR-008"],
+    "dependencies": ["FEAT-001", "FEAT-002"],
+    "acceptance_criteria": [
+      "Given a technician with an assigned work order, when they open it on their mobile device, then they see all work order details including customer, asset, and task information",
+      "Given a technician on-site, when they complete all required fields and submit, then the work order status changes to 'Completed' and enters the approval workflow",
+      "Given a technician working offline, when they complete a work order, then the completion is stored locally and synced when connectivity returns"
+    ],
+    "definition_of_done": [
+      "All work order fields are editable on mobile",
+      "Form validation prevents incomplete submissions",
+      "Unit and integration tests written and passing",
+      "UX review completed with field technician feedback",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-004",
+    "epic_id": "EPIC-001",
+    "title": "On-Site Photo Capture & Digital Sign-Off",
+    "description": "Allow technicians to capture photos, collect digital signatures from customers, and complete compliance checklists directly within the mobile app during on-site work.",
+    "user_persona": "Field Technician",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-010"],
+    "dependencies": ["FEAT-001", "FEAT-002"],
+    "acceptance_criteria": [
+      "Given a technician on-site, when they tap the photo capture button, then the device camera opens and the photo is attached to the work order",
+      "Given a completed job, when the technician requests a customer sign-off, then a digital signature pad is presented and the signature is stored with the work order",
+      "Given a work order with compliance requirements, when the technician opens the checklist, then all required items are displayed and must be completed before submission"
+    ],
+    "definition_of_done": [
+      "Photo capture works on both iOS and Android cameras",
+      "Digital signatures are stored as image files linked to work orders",
+      "Compliance checklists are configurable per work order type",
+      "All captured artifacts sync correctly in offline mode",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-005",
+    "epic_id": "EPIC-002",
+    "title": "Work Order Creation & Multi-Trigger Support",
+    "description": "Implement work order creation supporting multiple trigger sources: manual entry from customer calls, automatic creation from maintenance contracts, and an extensible architecture for future IoT sensor triggers.",
+    "user_persona": "Dispatcher",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-001"],
+    "dependencies": [],
+    "acceptance_criteria": [
+      "Given a dispatcher receiving a customer call, when they enter work order details, then a new work order is created with all required fields populated",
+      "Given an active maintenance contract with a scheduled trigger, when the trigger date arrives, then a work order is automatically created and assigned to the dispatch queue",
+      "Given the system architecture, when a new trigger source is defined, then it can be added without modifying existing work order creation logic"
+    ],
+    "definition_of_done": [
+      "Manual and contract-triggered creation paths tested end-to-end",
+      "API endpoint documented for future IoT integration",
+      "Unit tests cover all creation paths",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-006",
+    "epic_id": "EPIC-002",
+    "title": "Asset Linkage with IBM Maximo",
+    "description": "Enable work orders to be linked to specific customer assets managed in IBM Maximo, providing technicians with asset history, specifications, and maintenance records directly within the work order context.",
+    "user_persona": "Field Technician",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-002", "INT-003"],
+    "dependencies": ["FEAT-005"],
+    "acceptance_criteria": [
+      "Given a dispatcher creating a work order, when they search for a customer asset, then matching assets from Maximo are displayed with key details",
+      "Given a work order linked to a Maximo asset, when a technician views the work order, then they can see the asset's maintenance history and specifications",
+      "Given the Maximo API is temporarily unavailable, when a user attempts to link an asset, then the system displays a graceful error and allows the work order to be saved without the link"
+    ],
+    "definition_of_done": [
+      "Maximo API integration tested with real and mock data",
+      "Asset search returns results within 3 seconds",
+      "Error handling covers API timeout and unavailability scenarios",
+      "Integration documented in API docs",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-007",
+    "epic_id": "EPIC-002",
+    "title": "Two-Level Approval Workflow",
+    "description": "Implement the two-level approval workflow where completed work orders require supervisor sign-off followed by finance review before proceeding to invoicing in SAP.",
+    "user_persona": "Manager",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-003"],
+    "dependencies": ["FEAT-003", "FEAT-005"],
+    "acceptance_criteria": [
+      "Given a technician has submitted a completed work order, when the supervisor opens their approval queue, then the work order appears with all completion details for review",
+      "Given a supervisor has approved a work order, when finance opens their review queue, then the work order appears with cost details and supervisor approval timestamp",
+      "Given a reviewer rejects a work order, when the rejection is submitted with comments, then the work order is returned to the previous stage and the relevant party is notified"
+    ],
+    "definition_of_done": [
+      "Both approval levels function with email/Teams notifications",
+      "Rejection flow returns work orders to the correct stage",
+      "Approval audit trail is captured for compliance",
+      "Unit and integration tests passing",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-008",
+    "epic_id": "EPIC-002",
+    "title": "Digital Work Order Forms & Paper Elimination",
+    "description": "Replace all paper-based work order forms with digital equivalents that capture the same data fields, enforce required entries, and feed directly into the approval and invoicing workflow.",
+    "user_persona": "Field Technician",
+    "priority": "Critical",
+    "estimated_size": "S",
+    "linked_requirements": ["FR-004"],
+    "dependencies": ["FEAT-003", "FEAT-005"],
+    "acceptance_criteria": [
+      "Given the current paper work order form, when compared to the digital form, then all data fields from the paper version are present in the digital version",
+      "Given a technician filling out a digital form, when they miss a required field, then the form highlights the missing field and prevents submission",
+      "Given a completed digital form, when submitted, then the data flows directly to the approval workflow without manual re-entry"
+    ],
+    "definition_of_done": [
+      "All legacy paper form fields mapped to digital equivalents",
+      "Form validation rules documented and tested",
+      "Data flows end-to-end from form to approval queue",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-009",
+    "epic_id": "EPIC-003",
+    "title": "Automated Scheduling & Dispatch Board",
+    "description": "Replace the manual whiteboard-based dispatch process with a digital scheduling board that allows dispatchers to view technician availability, assign work orders, and manage the daily schedule through an intuitive drag-and-drop interface.",
+    "user_persona": "Dispatcher",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": ["FR-005", "FR-007"],
+    "dependencies": ["FEAT-005"],
+    "acceptance_criteria": [
+      "Given a dispatcher viewing the schedule board, when they see unassigned work orders, then they can drag and drop them onto available technician time slots",
+      "Given the dispatch board, when a dispatcher views it for the first time, then they can perform basic scheduling tasks within 30 minutes of introduction",
+      "Given multiple work orders for the same region, when the system suggests assignments, then it optimizes for travel time and technician skill match"
+    ],
+    "definition_of_done": [
+      "Dispatch board loads within 2 seconds with full day's schedule",
+      "Usability testing completed with 3+ dispatchers",
+      "Drag-and-drop works on desktop browsers (Chrome, Edge)",
+      "Training guide created for dispatch team",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-010",
+    "epic_id": "EPIC-003",
+    "title": "Real-Time Technician Location Map",
+    "description": "Integrate with FleetComplete to display real-time technician GPS locations on the dispatch board map, enabling location-aware job assignment and route optimization.",
+    "user_persona": "Dispatcher",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-006", "INT-002"],
+    "dependencies": ["FEAT-009"],
+    "acceptance_criteria": [
+      "Given a dispatcher viewing the dispatch board, when they toggle the map view, then all active technician locations are displayed with real-time GPS data from FleetComplete",
+      "Given a technician's vehicle is moving, when the dispatcher views the map, then the technician's position updates within 30 seconds",
+      "Given the FleetComplete API is unavailable, when a dispatcher views the map, then a notification indicates location data is stale and shows the last known positions"
+    ],
+    "definition_of_done": [
+      "FleetComplete API integration tested with live and mock data",
+      "Map renders correctly with 40+ simultaneous technician markers",
+      "Graceful degradation when GPS data is unavailable",
+      "API rate limits documented and respected",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-011",
+    "epic_id": "EPIC-003",
+    "title": "Technician Notification & Job Acceptance",
+    "description": "When a dispatcher assigns a work order, automatically notify the technician via push notification and allow them to accept or flag the assignment directly from their mobile device.",
+    "user_persona": "Field Technician",
+    "priority": "High",
+    "estimated_size": "S",
+    "linked_requirements": ["FR-005", "FR-007"],
+    "dependencies": ["FEAT-001", "FEAT-009"],
+    "acceptance_criteria": [
+      "Given a dispatcher assigns a work order to a technician, when the assignment is saved, then the technician receives a push notification within 60 seconds",
+      "Given a technician receives an assignment notification, when they tap it, then the work order details are displayed with Accept and Flag options",
+      "Given a technician flags an assignment, when they provide a reason, then the dispatcher is notified and the work order returns to the unassigned queue"
+    ],
+    "definition_of_done": [
+      "Push notifications work on both iOS and Android",
+      "Notification delivery tested under offline-to-online transition",
+      "Flag/accept flow tested end-to-end",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-012",
+    "epic_id": "EPIC-004",
+    "title": "Real-Time Parts Availability Check",
+    "description": "Integrate with SAP S/4HANA inventory module to allow technicians and dispatchers to check real-time parts availability before committing to a job site visit.",
+    "user_persona": "Field Technician",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-011", "INT-001"],
+    "dependencies": ["FEAT-030"],
+    "acceptance_criteria": [
+      "Given a technician viewing a work order, when they tap 'Check Parts', then the system queries SAP and displays current stock levels for all required parts",
+      "Given parts are available at a nearby warehouse, when the technician views results, then the warehouse location and estimated pickup time are shown",
+      "Given the SAP API is slow or unavailable, when a parts check is initiated, then the system times out gracefully after 10 seconds and suggests the technician call the warehouse"
+    ],
+    "definition_of_done": [
+      "SAP S/4HANA inventory API integration tested with real and mock data",
+      "Response time under 5 seconds for 95th percentile queries",
+      "Error handling covers SAP downtime scenarios",
+      "API documented",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-013",
+    "epic_id": "EPIC-004",
+    "title": "Proactive Parts Verification Before Dispatch",
+    "description": "Automatically verify required parts availability when a work order is about to be dispatched, alerting the dispatcher if any parts are unavailable and suggesting alternatives or rescheduling.",
+    "user_persona": "Dispatcher",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-012", "INT-001"],
+    "dependencies": ["FEAT-009", "FEAT-012"],
+    "acceptance_criteria": [
+      "Given a dispatcher is about to assign a work order, when the system checks parts availability, then a green/yellow/red indicator shows parts readiness status",
+      "Given required parts are unavailable, when the dispatcher views the alert, then alternative parts or estimated restock dates are suggested",
+      "Given a work order has been dispatched with a parts warning, when the technician views the order, then the parts risk is clearly flagged"
+    ],
+    "definition_of_done": [
+      "Parts verification runs automatically before dispatch confirmation",
+      "Alert system tested with various inventory scenarios",
+      "Dispatcher can override warnings with documented justification",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-014",
+    "epic_id": "EPIC-004",
+    "title": "SAP Inventory Data Sync & API Modernization",
+    "description": "Replace legacy custom stored procedures with modern RESTful API integration to SAP S/4HANA for inventory, financials, and invoicing data exchange. Ensure the integration handles SAP updates without breaking.",
+    "user_persona": "IT Admin",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": ["INT-001"],
+    "dependencies": [],
+    "acceptance_criteria": [
+      "Given the new API integration is deployed, when SAP inventory data changes, then the platform reflects the update within 5 minutes",
+      "Given SAP performs a system update, when the integration is tested post-update, then no breaking changes occur due to versioned API contracts",
+      "Given a data discrepancy between SAP and the platform, when an admin investigates, then a reconciliation log shows the source and timing of the discrepancy"
+    ],
+    "definition_of_done": [
+      "All legacy stored procedures identified and replaced",
+      "API versioning strategy documented and implemented",
+      "Integration tested against SAP sandbox environment",
+      "Rollback plan documented",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-015",
+    "epic_id": "EPIC-005",
+    "title": "Customer Self-Service Portal",
+    "description": "Build a web-based customer portal where customers can log in, view all their active and historical work orders, and see real-time status updates without needing to call the 1-800 number.",
+    "user_persona": "Customer",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": ["FR-013"],
+    "dependencies": ["FEAT-021"],
+    "acceptance_criteria": [
+      "Given a customer with valid credentials, when they log into the portal, then they see a dashboard of all their active and recent work orders",
+      "Given a work order is in progress, when the customer views its detail page, then the current status, assigned technician, and estimated completion time are displayed",
+      "Given a customer without an account, when they visit the portal, then they can request access through a self-registration flow pending admin approval"
+    ],
+    "definition_of_done": [
+      "Portal accessible via modern web browsers (Chrome, Edge, Safari, Firefox)",
+      "Responsive design works on desktop and mobile browsers",
+      "Customer data filtered by authenticated customer's account only",
+      "Security review completed",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-016",
+    "epic_id": "EPIC-005",
+    "title": "Automated Customer Status Notifications",
+    "description": "Implement automated notifications sent to customers at key work order milestones: technician dispatched, technician en route, job started, and job complete.",
+    "user_persona": "Customer",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-014"],
+    "dependencies": ["FEAT-005", "FEAT-015"],
+    "acceptance_criteria": [
+      "Given a technician is dispatched to a job, when the assignment is confirmed, then the customer receives a notification with the technician's name and estimated arrival window",
+      "Given a technician marks a job as complete, when the status updates, then the customer receives a completion notification with a summary of work performed",
+      "Given a customer's notification preferences, when a milestone is reached, then the notification is sent via the customer's preferred channel (email or SMS)"
+    ],
+    "definition_of_done": [
+      "Notifications sent within 2 minutes of milestone trigger",
+      "Email and SMS channels supported",
+      "Customer notification preferences configurable in the portal",
+      "Unsubscribe mechanism available",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-017",
+    "epic_id": "EPIC-005",
+    "title": "Customer Work Order History & Search",
+    "description": "Provide customers with the ability to search and filter their historical work orders by date range, asset, status, and technician, with exportable reports for their own records.",
+    "user_persona": "Customer",
+    "priority": "High",
+    "estimated_size": "S",
+    "linked_requirements": ["FR-013"],
+    "dependencies": ["FEAT-015"],
+    "acceptance_criteria": [
+      "Given a customer on the portal, when they navigate to the history section, then they can filter work orders by date range, asset, and status",
+      "Given search results are displayed, when the customer clicks export, then a CSV or PDF report is downloaded",
+      "Given a customer has hundreds of work orders, when they search, then results load within 3 seconds"
+    ],
+    "definition_of_done": [
+      "Search and filter functionality tested with large datasets",
+      "Export formats validated (CSV, PDF)",
+      "Performance tested with 1000+ work orders per customer",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-018",
+    "epic_id": "EPIC-006",
+    "title": "Operational Dispatch Dashboard",
+    "description": "Build a real-time operational dashboard for the dispatch team showing current job statuses, technician utilization rates, unassigned work orders, and service level indicators.",
+    "user_persona": "Dispatcher",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-015"],
+    "dependencies": ["FEAT-009"],
+    "acceptance_criteria": [
+      "Given a dispatcher opens the dashboard, when the page loads, then they see real-time counts of active, completed, and unassigned work orders for the current day",
+      "Given work orders are being completed in the field, when the dashboard auto-refreshes, then the status updates appear within 60 seconds",
+      "Given a dispatcher wants to drill down, when they click a metric tile, then they are taken to the relevant filtered list of work orders"
+    ],
+    "definition_of_done": [
+      "Dashboard loads within 3 seconds",
+      "Auto-refresh interval configurable (default 60 seconds)",
+      "Tested with realistic data volumes (200+ active work orders)",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-019",
+    "epic_id": "EPIC-006",
+    "title": "Executive KPI Dashboard",
+    "description": "Deliver an executive-level dashboard showing key performance indicators including average time-to-resolution, first-time fix rate, customer satisfaction trends, and technician utilization over configurable time periods.",
+    "user_persona": "Manager",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-016"],
+    "dependencies": ["FEAT-018"],
+    "acceptance_criteria": [
+      "Given an executive opens the KPI dashboard, when the page loads, then they see average time-to-resolution and first-time fix rate for the selected time period",
+      "Given an executive selects a different time range, when the filter is applied, then all KPIs recalculate and display within 5 seconds",
+      "Given KPI data is available, when an executive views trends, then week-over-week and month-over-month comparisons are displayed as charts"
+    ],
+    "definition_of_done": [
+      "KPIs calculated from live work order data",
+      "Time range filters include: this week, this month, this quarter, custom range",
+      "Charts render correctly on desktop and tablet",
+      "Data accuracy validated against manual calculations",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-020",
+    "epic_id": "EPIC-006",
+    "title": "IT System Health Monitoring Dashboard",
+    "description": "Provide the IT team with a system health monitoring dashboard showing platform availability, API response times, integration health status, sync queue depth, and automated alerting for anomalies.",
+    "user_persona": "IT Admin",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-017"],
+    "dependencies": [],
+    "acceptance_criteria": [
+      "Given an IT admin opens the health dashboard, when the page loads, then they see current availability status for all platform components and integrations",
+      "Given an integration endpoint is down, when the health check detects the failure, then an alert is sent to the IT team within 5 minutes",
+      "Given historical health data is available, when an IT admin views the timeline, then they can see uptime/downtime patterns over the past 30 days"
+    ],
+    "definition_of_done": [
+      "Health checks run for all critical endpoints (SAP, Maximo, FleetComplete, Azure AD)",
+      "Alerting configured via email and Teams",
+      "Dashboard tested with simulated failure scenarios",
+      "Runbook created for common alert responses",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-021",
+    "epic_id": "EPIC-007",
+    "title": "Azure AD SSO Integration",
+    "description": "Integrate all platform components with Contoso's existing Azure AD (Entra ID) tenant for single sign-on authentication, ensuring users authenticate once and access all platform modules seamlessly.",
+    "user_persona": "IT Admin",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["NFR-002", "INT-005"],
+    "dependencies": [],
+    "acceptance_criteria": [
+      "Given a user with a valid Contoso Azure AD account, when they navigate to any platform module, then they are authenticated via SSO without entering separate credentials",
+      "Given a user's Azure AD session expires, when they next access the platform, then they are redirected to the Azure AD login and returned to their original page after authentication",
+      "Given a user is not in the Contoso Azure AD tenant, when they attempt to access the platform, then access is denied with a clear error message"
+    ],
+    "definition_of_done": [
+      "SSO works for web portal, mobile app, and admin interfaces",
+      "Token refresh and session management tested",
+      "Multi-factor authentication supported when enabled in Azure AD",
+      "Security review completed",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-022",
+    "epic_id": "EPIC-007",
+    "title": "Role-Based Access Control Configuration",
+    "description": "Implement RBAC across the platform with predefined roles (Technician, Dispatcher, Supervisor, Finance, Account Manager, IT Admin) that restrict access to data and features based on job function.",
+    "user_persona": "IT Admin",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["NFR-003"],
+    "dependencies": ["FEAT-021"],
+    "acceptance_criteria": [
+      "Given a user with the Technician role, when they access the platform, then they can only view their assigned work orders and cannot see customer contract data",
+      "Given a user with the Account Manager role, when they access customer data, then they can view sensitive contract information",
+      "Given an IT admin, when they manage role assignments, then they can assign and revoke roles through an admin interface synced with Azure AD groups"
+    ],
+    "definition_of_done": [
+      "All six predefined roles configured and tested",
+      "Role assignments sync with Azure AD security groups",
+      "Unauthorized access attempts logged for audit",
+      "Penetration testing completed for role boundary enforcement",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-023",
+    "epic_id": "EPIC-007",
+    "title": "Sensitive Data Access Restriction",
+    "description": "Implement fine-grained data access controls ensuring sensitive customer contract data is only visible to users with Account Manager role or above, with all access attempts logged.",
+    "user_persona": "Manager",
+    "priority": "Critical",
+    "estimated_size": "S",
+    "linked_requirements": ["NFR-003"],
+    "dependencies": ["FEAT-022"],
+    "acceptance_criteria": [
+      "Given a user without Account Manager or higher role, when they attempt to access customer contract data, then the data is hidden and access is denied",
+      "Given an Account Manager, when they view a customer profile, then contract details including pricing and terms are visible",
+      "Given any attempt to access restricted data, when the attempt occurs, then it is logged with user identity and outcome (allowed/denied)"
+    ],
+    "definition_of_done": [
+      "Data classification labels applied to all sensitive fields",
+      "Access control tested for all six roles",
+      "Audit logging verified for both allowed and denied access",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-024",
+    "epic_id": "EPIC-008",
+    "title": "Compliance Document Capture & Storage",
+    "description": "Implement secure storage for all compliance documentation captured on-site (photos, digital sign-offs, completed checklists) with metadata tagging, encryption at rest, and linkage to the originating work order.",
+    "user_persona": "Field Technician",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-019", "NFR-004"],
+    "dependencies": ["FEAT-004"],
+    "acceptance_criteria": [
+      "Given a technician submits a work order with compliance documents, when the documents are stored, then each document is encrypted at rest and tagged with work order ID, timestamp, and technician ID",
+      "Given all customer data must reside in the US, when compliance documents are stored, then the storage account is verified to be in a US Azure region",
+      "Given a compliance document is uploaded, when it is saved, then it is immutable and cannot be modified or deleted by non-admin users"
+    ],
+    "definition_of_done": [
+      "Storage uses Azure Blob Storage with US-region constraint",
+      "Encryption at rest enabled and verified",
+      "Immutability policies configured",
+      "Storage tested with large photo files (up to 20MB each)",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-025",
+    "epic_id": "EPIC-008",
+    "title": "Seven-Year Retention & Audit Trail",
+    "description": "Configure document retention policies ensuring all compliance records are retained for a minimum of seven years with a complete audit trail tracking who created, accessed, or modified each document.",
+    "user_persona": "IT Admin",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-020"],
+    "dependencies": ["FEAT-024"],
+    "acceptance_criteria": [
+      "Given a compliance document stored in the system, when the retention period is checked, then it is set to a minimum of seven years from the creation date",
+      "Given any user accesses a compliance document, when the access occurs, then an audit log entry is created with user ID, timestamp, and action type",
+      "Given an IT admin queries the audit trail, when they search by work order or date range, then all access and modification events are returned"
+    ],
+    "definition_of_done": [
+      "Retention policies automated via Azure Storage lifecycle rules",
+      "Audit logs stored separately and tamper-proof",
+      "Retention compliance verified with sample data across 7-year simulated timeline",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-026",
+    "epic_id": "EPIC-009",
+    "title": "Teams Work Order Notifications",
+    "description": "Integrate with Microsoft Teams to send work order notifications (new assignment, status changes, approval requests) directly to technicians and supervisors via Teams messages and adaptive cards.",
+    "user_persona": "Field Technician",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-018", "INT-004"],
+    "dependencies": ["FEAT-005"],
+    "acceptance_criteria": [
+      "Given a technician is assigned a new work order, when the assignment is saved, then they receive a Teams notification with an adaptive card showing work order summary",
+      "Given a supervisor has a pending approval, when the work order enters the approval queue, then they receive a Teams notification with approve/reject action buttons",
+      "Given a technician is using Teams on iOS or Android, when they receive a notification, then the adaptive card renders correctly on the mobile Teams client"
+    ],
+    "definition_of_done": [
+      "Teams bot/connector registered and configured",
+      "Adaptive cards tested on desktop and mobile Teams clients",
+      "Notification delivery latency under 60 seconds",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-027",
+    "epic_id": "EPIC-009",
+    "title": "Teams Work Order Interaction",
+    "description": "Enable technicians to view work order details, update status, and perform basic actions (accept, flag, mark en route) directly from within Microsoft Teams without switching to the dedicated mobile app.",
+    "user_persona": "Field Technician",
+    "priority": "High",
+    "estimated_size": "M",
+    "linked_requirements": ["FR-018", "INT-004"],
+    "dependencies": ["FEAT-026"],
+    "acceptance_criteria": [
+      "Given a technician receives a work order notification in Teams, when they click 'View Details', then full work order information is displayed in a Teams task module",
+      "Given a technician viewing a work order in Teams, when they tap 'Accept' or 'Mark En Route', then the work order status updates in the platform in real time",
+      "Given a technician with no connectivity, when they attempt an action in Teams, then the action is queued and a message indicates it will be processed when connectivity returns"
+    ],
+    "definition_of_done": [
+      "Teams task modules render work order details correctly",
+      "Status update actions sync with the platform backend",
+      "Tested on iOS and Android Teams clients",
+      "No additional app installation required beyond Teams",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-028",
+    "epic_id": "EPIC-010",
+    "title": "Azure Infrastructure Provisioning & US Data Residency",
+    "description": "Provision the Azure-native hosting infrastructure in US regions, configure networking, storage, and compute resources, and enforce data residency policies ensuring all customer data remains within the United States.",
+    "user_persona": "IT Admin",
+    "priority": "Critical",
+    "estimated_size": "M",
+    "linked_requirements": ["NFR-004", "NFR-005"],
+    "dependencies": [],
+    "acceptance_criteria": [
+      "Given the infrastructure is provisioned, when Azure resource locations are audited, then all resources hosting customer data are in US Azure regions",
+      "Given a deployment attempt to a non-US region, when the deployment runs, then Azure Policy denies the deployment and logs the violation",
+      "Given the infrastructure requirements, when the environment is provisioned, then it is defined as Infrastructure as Code (Bicep/Terraform) for reproducibility"
+    ],
+    "definition_of_done": [
+      "Infrastructure as Code templates created and version controlled",
+      "Azure Policy for US-only data residency enforced",
+      "Network security groups and firewall rules configured",
+      "Cost estimate documented and approved",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-029",
+    "epic_id": "EPIC-010",
+    "title": "Phased Rollout & Parallel Operation Support",
+    "description": "Implement the phased rollout strategy enabling the new platform to run in parallel with the legacy system during the transition period, including data synchronization between old and new systems and a clear cutover plan.",
+    "user_persona": "IT Admin",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": ["NFR-006"],
+    "dependencies": ["FEAT-028", "FEAT-030"],
+    "acceptance_criteria": [
+      "Given the pilot region is identified, when the new platform is deployed, then both legacy and new systems operate simultaneously for the pilot group",
+      "Given work orders are created in either system during parallel operation, when data is synced, then both systems reflect consistent work order status",
+      "Given the pilot validation is complete, when the cutover decision is made, then a documented runbook guides the transition from legacy to new platform"
+    ],
+    "definition_of_done": [
+      "Parallel operation tested with pilot region data",
+      "Data sync between legacy and new systems validated",
+      "Cutover runbook documented and reviewed",
+      "Rollback plan documented",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-030",
+    "epic_id": "EPIC-010",
+    "title": "SAP S/4HANA API Integration Layer",
+    "description": "Build the modern API integration layer replacing legacy stored procedures for SAP S/4HANA connectivity, supporting financials, inventory, and invoicing data exchange with versioned APIs resilient to SAP updates.",
+    "user_persona": "IT Admin",
+    "priority": "Critical",
+    "estimated_size": "L",
+    "linked_requirements": ["INT-001"],
+    "dependencies": ["FEAT-028"],
+    "acceptance_criteria": [
+      "Given the integration layer is deployed, when the platform sends financial data to SAP, then invoices are created correctly in SAP S/4HANA",
+      "Given SAP performs a quarterly update, when the integration is tested, then all API contracts remain functional due to versioning",
+      "Given an API call fails, when the integration layer retries, then it follows an exponential backoff strategy and logs the failure for IT monitoring"
+    ],
+    "definition_of_done": [
+      "All legacy stored procedures replaced with RESTful API calls",
+      "API versioning implemented (v1 baseline)",
+      "Retry and circuit breaker patterns implemented",
+      "Integration tested against SAP sandbox",
+      "Comprehensive API documentation published",
+      "Reviewed by product owner"
+    ]
+  },
+  {
+    "id": "FEAT-031",
+    "epic_id": "EPIC-010",
+    "title": "API Documentation & Developer Portal",
+    "description": "Create comprehensive API documentation for all custom-built platform components, published through a developer portal that enables internal teams to understand, test, and integrate with the platform APIs.",
+    "user_persona": "IT Admin",
+    "priority": "High",
+    "estimated_size": "S",
+    "linked_requirements": ["NFR-007"],
+    "dependencies": ["FEAT-030"],
+    "acceptance_criteria": [
+      "Given a developer accessing the API portal, when they browse available endpoints, then they see complete request/response schemas with examples for every custom API",
+      "Given API documentation, when a developer reads an endpoint description, then they can successfully make a test call using the provided examples",
+      "Given a new API endpoint is deployed, when the deployment completes, then the documentation is automatically updated via the CI/CD pipeline"
+    ],
+    "definition_of_done": [
+      "OpenAPI/Swagger specifications generated for all custom APIs",
+      "Developer portal hosted and accessible to internal teams",
+      "Auto-generation integrated into CI/CD pipeline",
+      "Documentation reviewed by development team for accuracy",
+      "Reviewed by product owner"
+    ]
+  }
+]
