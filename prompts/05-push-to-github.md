@@ -1,5 +1,5 @@
 # Prompt: Push Backlog to GitHub via MCP
-## Stage 4A — GitHub
+## Stage 5A — GitHub
 
 You are an agent with access to GitHub MCP tools. Your task is to populate a GitHub repository with the full project backlog.
 

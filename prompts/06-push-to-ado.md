@@ -1,5 +1,5 @@
 # Prompt: Push Backlog to Azure DevOps via MCP
-## Stage 4B — Azure DevOps
+## Stage 5B — Azure DevOps
 
 You are an agent with access to Azure DevOps MCP tools. Your task is to populate an Azure DevOps project with the full project backlog as a properly structured work item hierarchy.
 

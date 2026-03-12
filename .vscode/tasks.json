@@ -66,7 +66,7 @@
       "problemMatcher": []
     },
     {
-      "label": "📐 Stage 3.5: Generate Specs",
+      "label": "📐 Stage 4: Generate Specs",
       "type": "shell",
       "command": "echo 'Open Copilot Chat and run: @workspace #file:prompts/04b-generate-specs.md — specify which FEAT-ID to generate a spec for, or ask Copilot to generate specs for all features.'",
       "group": "none",
@@ -80,7 +80,7 @@
       "problemMatcher": []
     },
     {
-      "label": "🐙 Stage 4A: Push to GitHub (MCP)",
+      "label": "🐙 Stage 5A: Push to GitHub (MCP)",
       "type": "shell",
       "command": "echo 'Switch Copilot to Agent Mode and run: @workspace #file:prompts/05-push-to-github.md'",
       "group": "none",
@@ -92,7 +92,7 @@
       "problemMatcher": []
     },
     {
-      "label": "🔷 Stage 4B: Push to Azure DevOps (MCP)",
+      "label": "🔷 Stage 5B: Push to Azure DevOps (MCP)",
       "type": "shell",
       "command": "echo 'Switch Copilot to Agent Mode and run: @workspace #file:prompts/06-push-to-ado.md'",
       "group": "none",
@@ -106,7 +106,7 @@
     {
       "label": "✅ Validate: Check All Stage Outputs",
       "type": "shell",
-      "command": "echo '--- Checking stage outputs ---' && echo 'Stage 2:' && ls stages/02-requirements/ 2>/dev/null || echo '  [EMPTY]' && echo 'Stage 3:' && ls stages/03-backlog/ 2>/dev/null || echo '  [EMPTY]' && echo 'Stage 4:' && ls stages/04-devops/ 2>/dev/null || echo '  [EMPTY]'",
+      "command": "echo '--- Checking stage outputs ---' && echo 'Stage 2:' && ls stages/02-requirements/ 2>/dev/null || echo '  [EMPTY]' && echo 'Stage 3:' && ls stages/03-backlog/ 2>/dev/null || echo '  [EMPTY]' && echo 'Stage 5:' && ls stages/04-devops/ 2>/dev/null || echo '  [EMPTY]'",
       "group": "test",
       "presentation": {
         "reveal": "always",

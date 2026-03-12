@@ -1,0 +1,15 @@
+{
+  "name": "agentic-sdlc-stage-visualizer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local visualizer for transcript, requirements, epics, features, user stories, and specs.",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "marked": "^15.0.7"
+  }
+}

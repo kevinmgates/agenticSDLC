@@ -12,7 +12,7 @@ A Microsoft services engagement team has just completed a scoping call with a cu
 1. **Reads** the meeting transcript
 2. **Extracts** structured requirements
 3. **Generates** epics, features, user stories and technical specs
-4. **Pushes** the entire backlog directly to Azure DevOps or GitHub — live, in front of the customer
+4. **Pushes** the entire backlog directly to Azure DevOps or GitHub
 
 ---
 
@@ -87,8 +87,6 @@ code sdlc-agent-demo/
 
 Install recommended extensions when prompted.
 
----
-
 ## Running the Demo
 
 ### Option A: Manual (most demo-friendly, shows AI working live)
@@ -102,9 +100,9 @@ Open the VS Code Tasks panel: `Terminal → Run Task`
 | 🗂️ Stage 2→3A | Generates epics JSON |
 | 🧩 Stage 2→3B | Generates features JSON |
 | 📝 Stage 3 | Generates user stories JSON |
-| 📐 Stage 3.5 | Generates technical specs (one per feature) |
-| 🐙 Stage 4A | Agent pushes backlog to GitHub |
-| 🔷 Stage 4B | Agent pushes backlog to Azure DevOps |
+| 📐 Stage 4 | Generates technical specs (one per feature) |
+| 🐙 Stage 5A | Agent pushes backlog to GitHub |
+| 🔷 Stage 5B | Agent pushes backlog to Azure DevOps |
 | ✅ Validate | Checks all stage outputs exist |
 | 🔄 Reset | Clears outputs for a clean re-run |
 
@@ -113,15 +111,33 @@ Open the VS Code Tasks panel: `Terminal → Run Task`
 1. Run the task to see the prompt instruction
 2. Open **Copilot Chat** (Ctrl+Alt+I / Cmd+Alt+I)
 3. For Stages 1-3: use **Chat mode** with `@workspace`
-4. For Stage 3.5: use **Chat mode** — target a specific feature (`generate a spec for FEAT-003`) or ask Copilot to loop through all features
-5. For Stage 4: switch to **Agent mode** — Copilot will call MCP tools automatically
+4. For Stage 4: use **Chat mode** — target a specific feature (`generate a spec for FEAT-003`) or ask Copilot to loop through all features
+5. For Stage 5: switch to **Agent mode** — Copilot will call MCP tools automatically
 6. Paste or reference the relevant prompt file from `/prompts/`
 
 ### Option B: Chained (advanced)
 In Agent mode, you can run the entire pipeline with a single prompt:
 > *"@workspace Run the full SDLC pipeline: start with #file:prompts/01-extract-requirements.md, then proceed through each stage in order, saving outputs to the appropriate stage folders."*
 
----
+## Local Visualizer App
+![Local Visualizer App](<images/CleanShot 2026-03-11 at 22.10.02@2x.png>)
+*Local visualizer preview after running the pipeline.*
+
+The repo also includes a local web app in [app/](app/) that visualizes the generated stage outputs after you run the pipeline. It is meant for local review only, so you can quickly browse the transcript, requirements, epics, features, user stories, specs, and push artifacts in one place before or after showing the GitHub or Azure DevOps results.
+
+### Start the App
+
+```bash
+cd app
+npm install
+npm run dev
+```
+
+Then open:
+
+- http://localhost:4173
+
+The app reads from the repo's `stages/` folder, so as you generate requirements, backlog items, specs, and push logs, the visualizer reflects those outputs locally when refreshed.
 
 ## Demo Script (10-15 minutes)
 
@@ -133,11 +149,13 @@ In Agent mode, you can run the entire pipeline with a single prompt:
 
 **[6:00]** Run Stage 2→3B + Stage 3. *"Features and user stories, all linked back to requirements."* Show the hierarchy in `features.json` and `user-stories.json`.
 
-**[8:00]** Run Stage 3.5. *"Now watch it generate a full technical spec for each feature — data models, API contracts, edge cases, acceptance criteria."* Show a spec file appearing in `stages/03-backlog/specs/`. *"This is what a developer — or an AI coding agent — works from."*
+**[8:00]** Run Stage 4. *"Now watch it generate a full technical spec for each feature — data models, API contracts, edge cases, acceptance criteria."* Show a spec file appearing in `stages/03-backlog/specs/`. *"This is what a developer — or an AI coding agent — works from."*
+
+**Optional** Start the local visualizer app from [app/](app/) by running `npm run dev` from the /app directory in the terminal. This is a great option to visualize the artifacts WITHOUT pushing the backlog to GitHub or Azure DevOps. *"We also used AI to help build this lightweight review app itself, so once the stages run, we can browse requirements, epics, features, user stories, specs in a single interface."*
 
 **[11:00]** Switch to Agent mode. Open GitHub or ADO — show it empty.
 
-**[12:00]** Run Stage 4. *"Watch the agent call MCP tools in real time."* Let the audience see the tool calls in Copilot Chat.
+**[12:00]** Run Stage 5. *"Watch the agent call MCP tools in real time."* Let the audience see the tool calls in Copilot Chat.
 
 **[15:00]** Refresh GitHub/ADO. Show the fully populated backlog. *"From transcript to backlog — in minutes."*
 

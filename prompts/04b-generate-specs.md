@@ -1,5 +1,5 @@
 # Prompt: Generate Specification from User Stories
-## Stage 3.5 — Spec-Driven Development
+## Stage 4 — Spec-Driven Development
 
 You are a senior software architect working on a Microsoft Services engagement building a Field Service Management platform on Azure.
 
