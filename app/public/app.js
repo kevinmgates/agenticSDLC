@@ -9,6 +9,8 @@ const state = {
     selectedStoryId: null,
     activePromptKey: null,
     isAgentPreviewOpen: false,
+    isHumanPreviewOpen: false,
+    humanPreviewAssigneeId: null,
     activePaneMenuKey: null,
     isAssignMenuOpen: false,
     selectedAssignees: [],
@@ -159,6 +161,7 @@ function render(options = {}) {
       </section>
       ${renderPromptModal()}
       ${renderAgentPreviewModal()}
+      ${renderHumanPreviewModal()}
       <button class="floating-refresh-button" id="refresh-data" type="button" aria-label="Refresh data" title="Refresh data">
         <span aria-hidden="true">↻</span>
       </button>
@@ -195,6 +198,7 @@ function render(options = {}) {
     bindPromptActions();
     bindAssignMenu();
     bindAgentPreviewModal();
+    bindHumanPreviewModal();
     bindGlobalInteractions();
 
     if (focusColumnId) {
@@ -718,6 +722,38 @@ function renderAgentPreviewModal() {
     `;
 }
 
+function renderHumanPreviewModal() {
+    if (!state.isHumanPreviewOpen || !state.humanPreviewAssigneeId) {
+        return '';
+    }
+
+    const assignee = assigneeOptions.find((option) => option.id === state.humanPreviewAssigneeId);
+    if (!assignee) {
+        return '';
+    }
+
+    return `
+      <div class="modal-overlay" id="human-preview-modal-overlay" role="presentation">
+        <section class="modal-card agent-preview-modal-card" id="human-preview-modal" role="dialog" aria-modal="true" aria-labelledby="human-preview-modal-title">
+          <button class="modal-close" id="close-human-preview-modal" type="button" aria-label="Close dialog">✕</button>
+          <div class="modal-hero">
+            <div class="modal-hero-icon" aria-hidden="true">${escapeHtml(assignee.avatar)}</div>
+            <div>
+              <span class="kicker">${escapeHtml(assignee.subtitle)}</span>
+              <h2 id="human-preview-modal-title">Assigned to ${escapeHtml(assignee.name)}</h2>
+              <p>
+                This preview highlights the assignment experience when a feature spec is assigned to a human team member.
+              </p>
+            </div>
+          </div>
+          <figure class="modal-image-frame">
+            <img class="modal-image" src="https://github.blog/wp-content/uploads/2024/10/379916599-741749f0-037f-493b-88b9-842f5cbfec9b.png?w=1536" alt="Preview of the human assignee experience" />
+          </figure>
+        </section>
+      </div>
+    `;
+}
+
 function renderSelectedStoryDetail(selectedStory) {
     if (!selectedStory) {
         return `
@@ -903,6 +939,15 @@ function bindAgentPreviewModal() {
     });
 }
 
+function bindHumanPreviewModal() {
+    document.getElementById('close-human-preview-modal')?.addEventListener('click', closeHumanPreviewModal);
+    document.getElementById('human-preview-modal-overlay')?.addEventListener('click', (event) => {
+        if (event.target.id === 'human-preview-modal-overlay') {
+            closeHumanPreviewModal();
+        }
+    });
+}
+
 function bindPaneMenus() {
     document.querySelectorAll('[data-pane-menu-toggle]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -933,6 +978,11 @@ function handleGlobalKeydown(event) {
 
     if (state.isAgentPreviewOpen) {
         closeAgentPreviewModal();
+        return;
+    }
+
+    if (state.isHumanPreviewOpen) {
+        closeHumanPreviewModal();
         return;
     }
 
@@ -993,6 +1043,16 @@ function closeAgentPreviewModal() {
     render();
 }
 
+function closeHumanPreviewModal() {
+    if (!state.isHumanPreviewOpen) {
+        return;
+    }
+
+    state.isHumanPreviewOpen = false;
+    state.humanPreviewAssigneeId = null;
+    render();
+}
+
 function toggleAssignee(assigneeId) {
     if (!assigneeId) {
         return;
@@ -1011,6 +1071,18 @@ function toggleAssignee(assigneeId) {
         state.activePaneMenuKey = null;
         state.activePromptKey = null;
         state.isAgentPreviewOpen = true;
+    }
+
+    const humanAssigneeIds = assigneeOptions
+        .filter((option) => option.id !== 'github-coding-agent')
+        .map((option) => option.id);
+
+    if (humanAssigneeIds.includes(assigneeId) && !isSelected) {
+        state.isAssignMenuOpen = false;
+        state.activePaneMenuKey = null;
+        state.activePromptKey = null;
+        state.isHumanPreviewOpen = true;
+        state.humanPreviewAssigneeId = assigneeId;
     }
 
     render();
