@@ -1,5 +1,5 @@
-# SDLC Agent Demo
-### Microsoft Services — AI-Assisted Software Development Lifecycle
+# Agentic SDLC Demo - Scopilot
+### AI-Assisted Software Development Lifecycle
 
 This project demonstrates how GitHub Copilot and MCP servers can automate the transformation of a customer scoping call transcript into a fully populated Azure DevOps or GitHub project backlog — with zero manual data entry.
 
@@ -24,6 +24,11 @@ sdlc-agent-demo/
 │   ├── tasks.json          # One-click pipeline stage runners
 │   ├── settings.json       # MCP server config + editor settings
 │   └── extensions.json     # Recommended VS Code extensions
+├── app/
+│   ├── public/             # Local Scopilot visualizer UI
+│   ├── server.js           # Express server for stage data + static app
+│   ├── package.json        # App scripts and dependencies
+│   └── README.md           # App-specific notes
 ├── stages/
 │   ├── 01-transcript/      # INPUT: Raw meeting transcript
 │   ├── 02-requirements/    # AI-generated: Requirements doc
@@ -119,11 +124,11 @@ Open the VS Code Tasks panel: `Terminal → Run Task`
 In Agent mode, you can run the entire pipeline with a single prompt:
 > *"@workspace Run the full SDLC pipeline: start with #file:prompts/01-extract-requirements.md, then proceed through each stage in order, saving outputs to the appropriate stage folders."*
 
-## Local Visualizer App
+## Local Visualizer App (optional)
+The repo also includes a local Node.js web app in [app/](app/) that visualizes the generated artifacts. It is meant for local review only, so you can quickly browse the transcript, requirements, epics, features, user stories and specs without pushing the backlog to GitHub or Azure DevOps via the MCP servers.
+
 ![Local Visualizer App](<images/CleanShot 2026-03-11 at 22.10.02@2x.png>)
 *Local visualizer preview after running the pipeline.*
-
-The repo also includes a local web app in [app/](app/) that visualizes the generated stage outputs after you run the pipeline. It is meant for local review only, so you can quickly browse the transcript, requirements, epics, features, user stories, specs, and push artifacts in one place before or after showing the GitHub or Azure DevOps results.
 
 ### Start the App
 
@@ -135,7 +140,7 @@ npm run dev
 
 Then open:
 
-- http://localhost:4173
+- http://localhost:4173 or the click the link provided in your terminal
 
 The app reads from the repo's `stages/` folder, so as you generate requirements, backlog items, specs, and push logs, the visualizer reflects those outputs locally when refreshed.
 
