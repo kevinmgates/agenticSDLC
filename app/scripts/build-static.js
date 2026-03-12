@@ -35,9 +35,14 @@ async function buildStaticSite() {
         .replace('href="/styles.css"', 'href="./styles.css"')
         .replace('src="/app.js"', 'src="./app.js"');
 
+    const sourceAppJs = await fs.readFile(path.join(publicDir, 'app.js'), 'utf8');
+    const staticAppJs = sourceAppJs
+        .replace('src="/assets/scopilot.png"', 'src="./assets/scopilot.png"');
+
     await Promise.all([
         fs.writeFile(path.join(outputDir, 'index.html'), staticHtml, 'utf8'),
         fs.writeFile(path.join(outputDir, '404.html'), staticHtml, 'utf8'),
+        fs.writeFile(path.join(outputDir, 'app.js'), staticAppJs, 'utf8'),
         fs.writeFile(path.join(outputDir, '.nojekyll'), '', 'utf8'),
     ]);
 

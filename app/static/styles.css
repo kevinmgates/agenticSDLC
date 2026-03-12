@@ -97,8 +97,30 @@ button {
     text-transform: uppercase;
 }
 
+.hero-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin: 8px 0 2px;
+}
+
+.hero-logo {
+    width: 82px;
+    height: 82px;
+    object-fit: contain;
+    flex: 0 0 auto;
+}
+
+.hero-copy-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding-top: 7px;
+}
+
 .hero h1 {
-    margin: 8px 0 4px;
+    margin: 0;
     font-size: clamp(1.7rem, 3.2vw, 2.35rem);
     line-height: 1;
 }
