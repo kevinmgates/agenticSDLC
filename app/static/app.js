@@ -706,7 +706,7 @@ function renderAgentPreviewModal() {
               <span class="kicker">GitHub Coding Agent</span>
               <h2 id="agent-preview-modal-title">Assigned to GitHub Copilot coding agent</h2>
               <p>
-                This preview highlights the handoff experience shown when the feature spec is assigned to the coding agent.
+                Once the coding agent builds the feature, you can use the GitHub Copilot code review agent to review the code, get AI-powered suggestions, and apply changes in just a few clicks.
               </p>
             </div>
           </div>
