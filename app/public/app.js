@@ -147,8 +147,13 @@ function render(options = {}) {
         <div class="hero-side-cards">
           <aside class="summary-card">
             <div class="summary-header">
-              <span class="card-header-icon" aria-hidden="true">📸</span>
-              <strong>Backlog Snapshot</strong>
+              <div class="summary-header-title">
+                <span class="card-header-icon" aria-hidden="true">📸</span>
+                <strong>Backlog Snapshot</strong>
+              </div>
+              <button class="summary-refresh-button" id="refresh-data" type="button" aria-label="Refresh backlog snapshot" title="Refresh backlog snapshot">
+                <span aria-hidden="true">↻</span>
+              </button>
             </div>
             <div class="summary-grid">
               ${summaryPill(data.summary.epicCount, 'Epics')}
@@ -179,9 +184,10 @@ function render(options = {}) {
       ${renderAgentPreviewModal()}
       ${renderReviewerPreviewModal()}
       ${renderPublishInfoModal()}
-      <button class="floating-refresh-button" id="refresh-data" type="button" aria-label="Refresh data" title="Refresh data">
-        <span aria-hidden="true">↻</span>
-      </button>
+      <a class="floating-github-button" href="${escapeHtml(githubRepoBaseUrl)}" target="_blank" rel="noreferrer" aria-label="View repository on GitHub" title="View repository on GitHub">
+        <img class="floating-github-button-icon" src="${escapeHtml(githubPublishIconAsset)}" alt="" />
+        <span>View Repo on GitHub</span>
+      </a>
     </main>
   `;
 
