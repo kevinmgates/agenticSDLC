@@ -4,7 +4,7 @@
 This project demonstrates how GitHub Copilot and MCP servers can automate the transformation of a customer scoping call transcript into a fully populated Azure DevOps or GitHub project backlog — with zero manual data entry.
 
 > **Pro Tip:**
-> Want a quick demo walkthrough without local setup? Open the [Scopilot Visualizer](https://github.com/kevinmgates/agenticSDLC) to explore the end-to-end agentic SDLC flow right in your browser.
+> Want a quick demo walkthrough without local setup? Open the [Scopilot Visualizer](https://kevinmgates.github.io/agenticSDLC/) to explore the end-to-end agentic SDLC flow right in your browser.
 
 ---
 
