@@ -128,9 +128,13 @@ function render(options = {}) {
     <main class="app-shell">
       <section class="hero">
         <article class="hero-card">
-          <span class="kicker">Scopilot </span>
-          <h1>Ship Faster. Start Smarter.</h1>
-          <p>Scoping calls transformed into structured backlogs in minutes with AI agents. That's Scopilot.</p>
+          <div class="hero-title-row">
+            <img class="hero-logo" src="/assets/scopilot.png" alt="Scopilot logo" />
+            <div class="hero-copy-block">
+              <h1>Scopilot - Ship Faster. Start Smarter.</h1>
+              <p>Scoping calls transformed into structured backlogs in minutes with AI agents. That's Scopilot!</p>
+            </div>
+          </div>
         </article>
         <aside class="summary-card">
           <div>

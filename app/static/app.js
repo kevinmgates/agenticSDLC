@@ -49,7 +49,7 @@ async function loadData() {
     render();
 
     try {
-    const response = await fetch(getDataEndpoint());
+        const response = await fetch(getDataEndpoint());
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
         }
@@ -130,7 +130,7 @@ function render(options = {}) {
         <article class="hero-card">
           <span class="kicker">Scopilot </span>
           <h1>Ship Faster. Start Smarter.</h1>
-          <p>Scoping calls transformed into structured backlogs in minutes with AI agents. That's Scopilot.</p>
+          <p>Scoping calls transformed into structured backlogs in minutes with AI agents. That's Scopilot!</p>
         </article>
         <aside class="summary-card">
           <div>
@@ -246,7 +246,7 @@ function renderTranscriptColumn(transcript) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2>1. Transcript</h2>
+            <h2 class="pane-title">1. Transcript ${renderAiEnhancementBadge({ label: 'AI assisted', interactive: false })}</h2>
             <div class="column-subtitle">The original customer conversation that starts the pipeline.</div>
           </div>
           <span class="badge">Input</span>
@@ -265,7 +265,7 @@ function renderRequirementsColumn(requirements) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2 class="pane-title">2. Requirements ${renderAiEnhancementBadge('requirements')}</h2>
+            <h2 class="pane-title">2. Requirements ${renderAiEnhancementBadge({ promptKey: 'requirements', label: 'AI generated' })}</h2>
             <div class="column-subtitle">Structured needs extracted from the transcript and organized into project, functional, non-functional, and integration views.</div>
           </div>
           <div class="column-header-actions">
@@ -350,7 +350,7 @@ function renderEpicsColumn(epics, selectedEpic) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2 class="pane-title">3. Epics ${renderAiEnhancementBadge('epics')}</h2>
+            <h2 class="pane-title">3. Epics ${renderAiEnhancementBadge({ promptKey: 'epics', label: 'AI generated' })}</h2>
             <div class="column-subtitle">Strategic workstreams derived from the requirements set.</div>
           </div>
           <div class="column-header-actions">
@@ -405,7 +405,7 @@ function renderFeaturesColumn(features, selectedFeature, selectedEpic) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2 class="pane-title">4. Features ${renderAiEnhancementBadge('features')}</h2>
+            <h2 class="pane-title">4. Features ${renderAiEnhancementBadge({ promptKey: 'features', label: 'AI generated' })}</h2>
             <div class="column-subtitle">Feature breakdown for ${escapeHtml(selectedEpic.id)} — ${escapeHtml(selectedEpic.title)}.</div>
           </div>
           <div class="column-header-actions">
@@ -463,7 +463,7 @@ function renderStoriesColumn(stories, selectedStory, selectedFeature) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2 class="pane-title">5. User Stories ${renderAiEnhancementBadge('stories')}</h2>
+            <h2 class="pane-title">5. User Stories ${renderAiEnhancementBadge({ promptKey: 'stories', label: 'AI generated' })}</h2>
             <div class="column-subtitle">Delivery-ready stories for ${escapeHtml(selectedFeature.id)} — ${escapeHtml(selectedFeature.title)}.</div>
           </div>
           <div class="column-header-actions">
@@ -515,7 +515,7 @@ function renderDetailColumn(selectedFeature, selectedStory, selectedSpec) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2 class="pane-title">6. Feature Spec ${renderAiEnhancementBadge('detail')}</h2>
+            <h2 class="pane-title">6. Feature Spec ${renderAiEnhancementBadge({ promptKey: 'detail', label: 'AI generated' })}</h2>
             <div class="column-subtitle">Implementation context, selected story focus, and the full spec document.</div>
           </div>
           <div class="column-header-actions">
@@ -563,11 +563,23 @@ function renderPaneMenu({ paneKey, items }) {
     `;
 }
 
-function renderAiEnhancementBadge(promptKey) {
+function renderAiEnhancementBadge({ promptKey = null, label = 'AI generated', interactive = true } = {}) {
+    const iconMarkup = '<span class="ai-enhancement-icon" aria-hidden="true">✨</span>';
+    const textMarkup = `<span>${escapeHtml(label)}</span>`;
+
+    if (!interactive || !promptKey) {
+        return `
+      <span class="ai-enhancement-badge ai-enhancement-badge-static" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">
+        ${iconMarkup}
+        ${textMarkup}
+      </span>
+    `;
+    }
+
     return `
-      <button class="ai-enhancement-badge" data-menu-prompt-key="${escapeHtml(promptKey)}" type="button" title="View prompt file" aria-label="View prompt file for AI enhanced stage">
-        <span class="ai-enhancement-icon" aria-hidden="true">🪄</span>
-        <span>AI</span>
+      <button class="ai-enhancement-badge" data-menu-prompt-key="${escapeHtml(promptKey)}" type="button" title="View prompt file" aria-label="View prompt file for ${escapeHtml(label).toLowerCase()} stage">
+        ${iconMarkup}
+        ${textMarkup}
       </button>
     `;
 }

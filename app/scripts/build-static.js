@@ -31,6 +31,7 @@ async function buildStaticSite() {
     const sourceHtml = await fs.readFile(path.join(publicDir, 'index.html'), 'utf8');
     const staticHtml = sourceHtml
         .replace('</title>', '</title>\n    <meta name="scopilot-data-endpoint" content="./data/stages.json" />')
+        .replace('href="/assets/scopilot.ico"', 'href="./assets/scopilot.ico"')
         .replace('href="/styles.css"', 'href="./styles.css"')
         .replace('src="/app.js"', 'src="./app.js"');
 
