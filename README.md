@@ -20,14 +20,20 @@ A Microsoft services engagement team has just completed a scoping call with a cu
 
 ```
 sdlc-agent-demo/
+├── .github/
+│   └── workflows/
+│       └── deploy-scopilot-pages.yml  # Builds and publishes the static app to GitHub Pages
 ├── .vscode/
 │   ├── tasks.json          # One-click pipeline stage runners
 │   ├── settings.json       # MCP server config + editor settings
 │   └── extensions.json     # Recommended VS Code extensions
 ├── app/
 │   ├── public/             # Local Scopilot visualizer UI
+│   ├── lib/                # Shared stage-data loader for server + static build
+│   ├── scripts/            # Build utilities, including static export
 │   ├── server.js           # Express server for stage data + static app
 │   ├── package.json        # App scripts and dependencies
+│   ├── static/             # Generated static export for GitHub Pages/static hosting
 │   └── README.md           # App-specific notes
 ├── stages/
 │   ├── 01-transcript/      # INPUT: Raw meeting transcript
@@ -164,8 +170,6 @@ The app reads from the repo's `stages/` folder, so as you generate requirements,
 
 **[15:00]** Refresh GitHub/ADO. Show the fully populated backlog. *"From transcript to backlog — in minutes."*
 
----
-
 ## Token Security Reminder
 
 - Never commit `.env` to source control
@@ -173,7 +177,33 @@ The app reads from the repo's `stages/` folder, so as you generate requirements,
 - For demo environments, consider using a dedicated demo org/project
 - Rotate tokens after the demo if used in a shared environment
 
----
+### Build a Static Version
+
+If you want to preserve the existing Node.js app and also generate a static version for GitHub Pages or another static host:
+
+```bash
+cd app
+npm install
+npm run build:static
+```
+
+This writes a static export to [app/static/](app/static). Re-run the command whenever the files in `stages/` or `prompts/` change.
+
+### Publish to GitHub Pages
+
+The repo now includes a GitHub Actions workflow at [.github/workflows/deploy-scopilot-pages.yml](.github/workflows/deploy-scopilot-pages.yml) that:
+
+- installs the app dependencies
+- runs `npm run build:static`
+- publishes [app/static/](app/static) to GitHub Pages
+
+To use it:
+
+1. In GitHub, open **Settings → Pages**
+2. Set **Source** to **GitHub Actions**
+3. Push to `main` or run the workflow manually from the **Actions** tab
+
+After deployment, GitHub Pages will host the static Scopilot site built from the current `stages/` and `prompts/` content in the repository.
 
 ## Next Steps (Roadmap)
 

@@ -6,7 +6,8 @@
   "description": "Local visualizer for transcript, requirements, epics, features, user stories, and specs.",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build:static": "node scripts/build-static.js"
   },
   "dependencies": {
     "express": "^4.21.2",

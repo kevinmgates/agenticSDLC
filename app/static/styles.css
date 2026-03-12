@@ -483,18 +483,9 @@ button {
     transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
-.ai-enhancement-badge-static {
-    cursor: default;
-}
-
 .ai-enhancement-badge:hover {
     background: rgba(59, 130, 246, 0.24);
     border-color: rgba(125, 211, 252, 0.28);
-}
-
-.ai-enhancement-badge-static:hover {
-    background: rgba(59, 130, 246, 0.16);
-    border-color: rgba(125, 211, 252, 0.18);
 }
 
 .ai-enhancement-badge:focus-visible {
