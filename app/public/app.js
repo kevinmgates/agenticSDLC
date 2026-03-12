@@ -18,6 +18,7 @@ const state = {
 
 let hasBoundGlobalKeyboardHandler = false;
 let hasBoundGlobalClickHandler = false;
+let heroIntroPlayed = false;
 
 const defaultPaneWidths = {
     'transcript-column': 380,
@@ -31,6 +32,10 @@ const defaultPaneWidths = {
 const minPaneWidth = 300;
 const maxPaneWidth = 1200;
 const githubRepoBaseUrl = 'https://github.com/kevinmgates/agenticSDLC';
+const heroLogoAsset = getAssetPath('scopilot.png');
+const githubPublishIconAsset = getAssetPath('GitHub_Invertocat_White.png');
+const azureDevOpsPublishIconAsset = getAssetPath('azure_devops_logo_freelogovectors.net_.png');
+const jiraPublishIconAsset = getAssetPath('Jira.png');
 const assigneeOptions = [
     { id: 'github-coding-agent', name: 'GitHub Coding Agent', subtitle: 'AI collaborator', avatar: '🤖' },
     { id: 'maya-chen', name: 'Maya Chen', subtitle: 'Senior frontend engineer', avatar: 'MC' },
@@ -124,15 +129,16 @@ function render(options = {}) {
 
     const featuresForEpic = data.features.filter((feature) => feature.epic_id === state.selectedEpicId);
     const storiesForFeature = data.userStories.filter((story) => story.feature_id === state.selectedFeatureId);
+    const heroTitleClass = heroIntroPlayed ? 'hero-title' : 'hero-title hero-title-intro';
 
     appRoot.innerHTML = `
     <main class="app-shell">
       <section class="hero">
         <article class="hero-card">
           <div class="hero-title-row">
-            <img class="hero-logo" src="/assets/scopilot.png" alt="Scopilot logo" />
+            <img class="hero-logo" src="${escapeHtml(heroLogoAsset)}" alt="Scopilot logo" />
             <div class="hero-copy-block">
-              <h1>Scopilot &nbsp;|&nbsp; Ship Faster. Start Smarter.</h1>
+              <h1 class="${heroTitleClass}"><span class="hero-brand-highlight">Scopilot</span><span class="hero-divider" aria-hidden="true">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span class="hero-typed-copy">Ship Faster. Start Smarter.</span></h1>
               <p>Scoping calls transformed into a structured backlog in minutes with AI agents.</p>
             </div>
           </div>
@@ -212,6 +218,10 @@ function render(options = {}) {
 
     if (focusColumnId) {
         scrollColumnIntoView(focusColumnId);
+    }
+
+    if (!heroIntroPlayed) {
+        heroIntroPlayed = true;
     }
 }
 
@@ -927,21 +937,21 @@ function renderPublishActions() {
       <div class="summary-actions">
         <button class="pane-menu-item publish-action-button" data-prompt-modal-key="publishGithub" type="button" title="Show GitHub publish prompt" aria-label="Show GitHub publish prompt">
           <span class="pane-menu-item-icon" aria-hidden="true">
-            <img class="publish-action-icon" src="/assets/GitHub_Invertocat_White.png" alt="" />
+            <img class="publish-action-icon" src="${escapeHtml(githubPublishIconAsset)}" alt="" />
           </span>
           <span class="pane-menu-item-text">GitHub</span>
           <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
         </button>
         <button class="pane-menu-item publish-action-button" data-prompt-modal-key="publishAzureDevOps" type="button" title="Show Azure DevOps publish prompt" aria-label="Show Azure DevOps publish prompt">
           <span class="pane-menu-item-icon" aria-hidden="true">
-            <img class="publish-action-icon" src="/assets/azure_devops_logo_freelogovectors.net_.png" alt="" />
+            <img class="publish-action-icon" src="${escapeHtml(azureDevOpsPublishIconAsset)}" alt="" />
           </span>
           <span class="pane-menu-item-text">DevOps</span>
           <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
         </button>
         <button class="pane-menu-item publish-action-button" data-publish-info-target="jira" type="button" title="Publish backlog on Jira" aria-label="Publish backlog on Jira">
           <span class="pane-menu-item-icon" aria-hidden="true">
-            <img class="publish-action-icon" src="/assets/Jira.png" alt="" />
+            <img class="publish-action-icon" src="${escapeHtml(jiraPublishIconAsset)}" alt="" />
           </span>
           <span class="pane-menu-item-text">Jira</span>
           <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
@@ -1185,6 +1195,10 @@ function summaryPill(value, label) {
       <span>${escapeHtml(label)}</span>
     </div>
   `;
+}
+
+function getAssetPath(fileName) {
+    return new URL(`./assets/${fileName}`, document.baseURI).toString();
 }
 
 function getDataEndpoint() {

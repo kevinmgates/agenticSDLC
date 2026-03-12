@@ -31,6 +31,10 @@ const defaultPaneWidths = {
 const minPaneWidth = 300;
 const maxPaneWidth = 1200;
 const githubRepoBaseUrl = 'https://github.com/kevinmgates/agenticSDLC';
+const heroLogoAsset = getAssetPath('scopilot.png');
+const githubPublishIconAsset = getAssetPath('GitHub_Invertocat_White.png');
+const azureDevOpsPublishIconAsset = getAssetPath('azure_devops_logo_freelogovectors.net_.png');
+const jiraPublishIconAsset = getAssetPath('Jira.png');
 const assigneeOptions = [
     { id: 'github-coding-agent', name: 'GitHub Coding Agent', subtitle: 'AI collaborator', avatar: '🤖' },
     { id: 'maya-chen', name: 'Maya Chen', subtitle: 'Senior frontend engineer', avatar: 'MC' },
@@ -130,7 +134,7 @@ function render(options = {}) {
       <section class="hero">
         <article class="hero-card">
           <div class="hero-title-row">
-            <img class="hero-logo" src="./assets/scopilot.png" alt="Scopilot logo" />
+            <img class="hero-logo" src="${escapeHtml(heroLogoAsset)}" alt="Scopilot logo" />
             <div class="hero-copy-block">
               <h1>Scopilot &nbsp;|&nbsp; Ship Faster. Start Smarter.</h1>
               <p>Scoping calls transformed into a structured backlog in minutes with AI agents.</p>
@@ -140,7 +144,8 @@ function render(options = {}) {
         <div class="hero-side-cards">
           <aside class="summary-card">
             <div class="summary-header">
-              <strong>Backlog snapshot</strong>
+              <span class="card-header-icon" aria-hidden="true">📸</span>
+              <strong>Backlog Snapshot</strong>
             </div>
             <div class="summary-grid">
               ${summaryPill(data.summary.epicCount, 'Epics')}
@@ -151,7 +156,8 @@ function render(options = {}) {
           </aside>
           <aside class="publish-card">
             <div class="publish-card-header">
-              <strong>Publish backlog</strong>
+              <span class="card-header-icon" aria-hidden="true">🤖</span>
+              <strong>Publish Backlog</strong>
             </div>
             ${renderPublishActions()}
           </aside>
@@ -676,10 +682,30 @@ function renderPromptModal() {
 
     const promptFile = state.data?.promptFiles?.[state.activePromptKey];
     if (!promptFile) {
-        return '';
+        return `
+      <div class="modal-overlay" id="prompt-modal-overlay" role="presentation">
+        <section class="modal-card prompt-modal-card" id="prompt-modal" role="dialog" aria-modal="true" aria-labelledby="prompt-modal-title">
+          <button class="modal-close" id="close-prompt-modal" type="button" aria-label="Close dialog">✕</button>
+          <div class="modal-hero prompt-modal-hero">
+            <div class="modal-hero-icon" aria-hidden="true">&lt;/&gt;</div>
+            <div>
+              <span class="kicker">Prompt file</span>
+              <h2 id="prompt-modal-title">Prompt file unavailable</h2>
+              <p>
+                The selected prompt file is not available in the current app data. Refresh or restart the local app to load the latest prompt mappings.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    `;
     }
 
-  const promptGitHubUrl = `${githubRepoBaseUrl}/blob/main/${promptFile.path}`;
+    const promptGitHubUrl = `${githubRepoBaseUrl}/blob/main/${promptFile.path}`;
+    const promptDescription =
+        state.activePromptKey === 'publishGithub' || state.activePromptKey === 'publishAzureDevOps'
+            ? 'This prompt will instruct the agents to leverage MCP servers to publish the backlog.'
+            : "This is the prompt used to generate the selected pane's output. Review it locally before rerunning or adapting the stage.";
 
     return `
       <div class="modal-overlay" id="prompt-modal-overlay" role="presentation">
@@ -691,7 +717,7 @@ function renderPromptModal() {
               <span class="kicker">Prompt file</span>
               <h2 id="prompt-modal-title">${escapeHtml(promptFile.title)}</h2>
               <p>
-                This is the prompt used to generate the selected pane's output. Review it locally before rerunning or adapting the stage.
+                ${escapeHtml(promptDescription)}
               </p>
             </div>
           </div>
@@ -884,9 +910,9 @@ function bindRequirementsOutline() {
 }
 
 function bindPromptActions() {
-    document.querySelectorAll('[data-menu-prompt-key]').forEach((button) => {
+    document.querySelectorAll('[data-menu-prompt-key], [data-prompt-modal-key]').forEach((button) => {
         button.addEventListener('click', () => {
-            state.activePromptKey = button.dataset.menuPromptKey;
+            state.activePromptKey = button.dataset.menuPromptKey || button.dataset.promptModalKey;
             state.activePaneMenuKey = null;
             render();
         });
@@ -903,18 +929,24 @@ function bindPromptActions() {
 function renderPublishActions() {
     return `
       <div class="summary-actions">
-        <button class="pane-menu-item publish-action-button" data-menu-prompt-key="publishGithub" type="button" title="Publish backlog on GitHub" aria-label="Publish backlog on GitHub">
-          <span class="pane-menu-item-icon" aria-hidden="true">🐱</span>
+        <button class="pane-menu-item publish-action-button" data-prompt-modal-key="publishGithub" type="button" title="Show GitHub publish prompt" aria-label="Show GitHub publish prompt">
+          <span class="pane-menu-item-icon" aria-hidden="true">
+            <img class="publish-action-icon" src="${escapeHtml(githubPublishIconAsset)}" alt="" />
+          </span>
           <span class="pane-menu-item-text">GitHub</span>
           <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
         </button>
-        <button class="pane-menu-item publish-action-button" data-menu-prompt-key="publishAzureDevOps" type="button" title="Publish backlog on Azure DevOps" aria-label="Publish backlog on Azure DevOps">
-          <span class="pane-menu-item-icon" aria-hidden="true">🔷</span>
-          <span class="pane-menu-item-text">Azure DevOps</span>
+        <button class="pane-menu-item publish-action-button" data-prompt-modal-key="publishAzureDevOps" type="button" title="Show Azure DevOps publish prompt" aria-label="Show Azure DevOps publish prompt">
+          <span class="pane-menu-item-icon" aria-hidden="true">
+            <img class="publish-action-icon" src="${escapeHtml(azureDevOpsPublishIconAsset)}" alt="" />
+          </span>
+          <span class="pane-menu-item-text">DevOps</span>
           <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
         </button>
         <button class="pane-menu-item publish-action-button" data-publish-info-target="jira" type="button" title="Publish backlog on Jira" aria-label="Publish backlog on Jira">
-          <span class="pane-menu-item-icon" aria-hidden="true">🌀</span>
+          <span class="pane-menu-item-icon" aria-hidden="true">
+            <img class="publish-action-icon" src="${escapeHtml(jiraPublishIconAsset)}" alt="" />
+          </span>
           <span class="pane-menu-item-text">Jira</span>
           <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
         </button>
@@ -934,7 +966,7 @@ function renderPublishInfoModal() {
           <div class="modal-hero prompt-modal-hero">
             <div class="modal-hero-icon" aria-hidden="true">🌀</div>
             <div>
-              <span class="kicker">Publish backlog</span>
+              <span class="kicker">Publish Backlog</span>
               <h2 id="publish-info-modal-title">Jira publishing</h2>
               <p>
                 Jira publishing is not configured in this demo yet, but this button is reserved for a future Jira backlog publishing flow.
@@ -1003,8 +1035,8 @@ function handleGlobalKeydown(event) {
     }
 
     if (state.activePublishInfoTarget) {
-      closePublishInfoModal();
-      return;
+        closePublishInfoModal();
+        return;
     }
 
     if (state.activePromptKey) {
@@ -1046,20 +1078,20 @@ function handleGlobalClick(event) {
 }
 
 function bindPublishInfoActions() {
-  document.querySelectorAll('[data-publish-info-target]').forEach((button) => {
-    button.addEventListener('click', () => {
-      state.activePublishInfoTarget = button.dataset.publishInfoTarget;
-      state.activePaneMenuKey = null;
-      render();
+    document.querySelectorAll('[data-publish-info-target]').forEach((button) => {
+        button.addEventListener('click', () => {
+            state.activePublishInfoTarget = button.dataset.publishInfoTarget;
+            state.activePaneMenuKey = null;
+            render();
+        });
     });
-  });
 
-  document.getElementById('close-publish-info-modal')?.addEventListener('click', closePublishInfoModal);
-  document.getElementById('publish-info-modal-overlay')?.addEventListener('click', (event) => {
-    if (event.target.id === 'publish-info-modal-overlay') {
-      closePublishInfoModal();
-    }
-  });
+    document.getElementById('close-publish-info-modal')?.addEventListener('click', closePublishInfoModal);
+    document.getElementById('publish-info-modal-overlay')?.addEventListener('click', (event) => {
+        if (event.target.id === 'publish-info-modal-overlay') {
+            closePublishInfoModal();
+        }
+    });
 }
 
 function closePromptModal() {
@@ -1073,12 +1105,12 @@ function closePromptModal() {
 }
 
 function closePublishInfoModal() {
-  if (!state.activePublishInfoTarget) {
-    return;
-  }
+    if (!state.activePublishInfoTarget) {
+        return;
+    }
 
-  state.activePublishInfoTarget = null;
-  render();
+    state.activePublishInfoTarget = null;
+    render();
 }
 function closeAgentPreviewModal() {
     if (!state.isAgentPreviewOpen) {
@@ -1157,6 +1189,10 @@ function summaryPill(value, label) {
       <span>${escapeHtml(label)}</span>
     </div>
   `;
+}
+
+function getAssetPath(fileName) {
+    return new URL(`./assets/${fileName}`, document.baseURI).toString();
 }
 
 function getDataEndpoint() {

@@ -135,6 +135,78 @@ button {
     line-height: 1.04;
 }
 
+.hero-title {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.hero-brand-highlight {
+    color: #3b82f6;
+}
+
+.hero-divider {
+    display: inline-block;
+    opacity: 1;
+}
+
+.hero-typed-copy {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 0.9em;
+}
+
+.hero-title-intro .hero-typed-copy {
+    width: 0;
+    overflow: hidden;
+    animation: hero-type-in 2.1s steps(27, end) 180ms forwards;
+}
+
+.hero-title-intro .hero-divider {
+    animation: hero-divider-blink 2.28s steps(1, end) 1;
+}
+
+@keyframes hero-divider-blink {
+
+    0%,
+    22%,
+    44%,
+    66%,
+    88%,
+    100% {
+        opacity: 1;
+    }
+
+    11%,
+    33%,
+    55%,
+    77% {
+        opacity: 0.28;
+    }
+}
+
+@keyframes hero-type-in {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 19.5ch;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .hero-divider,
+    .hero-title-intro .hero-typed-copy {
+        animation: none;
+    }
+
+    .hero-title-intro .hero-typed-copy {
+        width: auto;
+    }
+}
+
 .hero p {
     margin: 0;
     color: var(--muted);

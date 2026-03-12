@@ -159,6 +159,20 @@ button {
     gap: 8px;
 }
 
+.card-header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: 0;
+    color: var(--accent);
+    font-size: 0.95rem;
+    line-height: 1;
+    flex: 0 0 auto;
+}
+
 .summary-actions {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -190,6 +204,13 @@ button {
     font-size: 0.78rem;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.publish-action-icon {
+    display: block;
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
 }
 
 .publish-action-button .pane-menu-item-trailing {
