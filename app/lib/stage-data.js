@@ -28,6 +28,8 @@ export async function loadStageData({ workspaceRoot = defaultWorkspaceRoot } = {
         features: path.join(workspaceRoot, 'prompts', '03-generate-features.md'),
         stories: path.join(workspaceRoot, 'prompts', '04-generate-user-stories.md'),
         detail: path.join(workspaceRoot, 'prompts', '04b-generate-specs.md'),
+        publishGithub: path.join(workspaceRoot, 'prompts', '05-push-to-github.md'),
+        publishAzureDevOps: path.join(workspaceRoot, 'prompts', '06-push-to-ado.md'),
     };
 
     const [transcriptMarkdown, requirementsMarkdown, epics, features, userStories, specs, prompts] = await Promise.all([

@@ -7,6 +7,7 @@ const state = {
     selectedEpicId: null,
     selectedFeatureId: null,
     selectedStoryId: null,
+    activePublishInfoTarget: null,
     activePromptKey: null,
     isAgentPreviewOpen: false,
     activePaneMenuKey: null,
@@ -131,22 +132,30 @@ function render(options = {}) {
           <div class="hero-title-row">
             <img class="hero-logo" src="./assets/scopilot.png" alt="Scopilot logo" />
             <div class="hero-copy-block">
-              <h1>Scopilot - Ship Faster. Start Smarter.</h1>
-              <p>Scoping calls transformed into structured backlogs in minutes with AI agents. That's Scopilot!</p>
+              <h1>Scopilot &nbsp;|&nbsp; Ship Faster. Start Smarter.</h1>
+              <p>Scoping calls transformed into a structured backlog in minutes with AI agents.</p>
             </div>
           </div>
         </article>
-        <aside class="summary-card">
-          <div>
-            <strong>Backlog snapshot</strong>
-          </div>
-          <div class="summary-grid">
-            ${summaryPill(data.summary.epicCount, 'Epics')}
-            ${summaryPill(data.summary.featureCount, 'Features')}
-            ${summaryPill(data.summary.userStoryCount, 'User stories')}
-            ${summaryPill(data.summary.specCount, 'Specs')}
-          </div>
-        </aside>
+        <div class="hero-side-cards">
+          <aside class="summary-card">
+            <div class="summary-header">
+              <strong>Backlog snapshot</strong>
+            </div>
+            <div class="summary-grid">
+              ${summaryPill(data.summary.epicCount, 'Epics')}
+              ${summaryPill(data.summary.featureCount, 'Features')}
+              ${summaryPill(data.summary.userStoryCount, 'User stories')}
+              ${summaryPill(data.summary.specCount, 'Specs')}
+            </div>
+          </aside>
+          <aside class="publish-card">
+            <div class="publish-card-header">
+              <strong>Publish backlog</strong>
+            </div>
+            ${renderPublishActions()}
+          </aside>
+        </div>
       </section>
 
       <section class="columns-shell" id="columns-shell">
@@ -159,6 +168,7 @@ function render(options = {}) {
       </section>
       ${renderPromptModal()}
       ${renderAgentPreviewModal()}
+      ${renderPublishInfoModal()}
       <button class="floating-refresh-button" id="refresh-data" type="button" aria-label="Refresh data" title="Refresh data">
         <span aria-hidden="true">↻</span>
       </button>
@@ -193,6 +203,7 @@ function render(options = {}) {
     bindRequirementsOutline();
     bindPaneMenus();
     bindPromptActions();
+    bindPublishInfoActions();
     bindAssignMenu();
     bindAgentPreviewModal();
     bindGlobalInteractions();
@@ -668,6 +679,8 @@ function renderPromptModal() {
         return '';
     }
 
+  const promptGitHubUrl = `${githubRepoBaseUrl}/blob/main/${promptFile.path}`;
+
     return `
       <div class="modal-overlay" id="prompt-modal-overlay" role="presentation">
         <section class="modal-card prompt-modal-card" id="prompt-modal" role="dialog" aria-modal="true" aria-labelledby="prompt-modal-title">
@@ -682,7 +695,14 @@ function renderPromptModal() {
               </p>
             </div>
           </div>
-          <div class="prompt-file-meta">${escapeHtml(promptFile.path)}</div>
+          <div class="prompt-file-meta-row">
+            <div class="prompt-file-meta">${escapeHtml(promptFile.path)}</div>
+            <a class="pane-menu-item pane-menu-link prompt-modal-link" href="${escapeHtml(promptGitHubUrl)}" target="_blank" rel="noreferrer" title="View on GitHub" aria-label="View prompt file on GitHub">
+              <span class="pane-menu-item-icon" aria-hidden="true">🐱</span>
+              <span class="pane-menu-item-text">View on GitHub</span>
+              <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
+            </a>
+          </div>
           <div class="prompt-content-shell">
             <pre class="prompt-content"><code>${escapeHtml(promptFile.markdown)}</code></pre>
           </div>
@@ -880,6 +900,52 @@ function bindPromptActions() {
     });
 }
 
+function renderPublishActions() {
+    return `
+      <div class="summary-actions">
+        <button class="pane-menu-item publish-action-button" data-menu-prompt-key="publishGithub" type="button" title="Publish backlog on GitHub" aria-label="Publish backlog on GitHub">
+          <span class="pane-menu-item-icon" aria-hidden="true">🐱</span>
+          <span class="pane-menu-item-text">GitHub</span>
+          <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
+        </button>
+        <button class="pane-menu-item publish-action-button" data-menu-prompt-key="publishAzureDevOps" type="button" title="Publish backlog on Azure DevOps" aria-label="Publish backlog on Azure DevOps">
+          <span class="pane-menu-item-icon" aria-hidden="true">🔷</span>
+          <span class="pane-menu-item-text">Azure DevOps</span>
+          <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
+        </button>
+        <button class="pane-menu-item publish-action-button" data-publish-info-target="jira" type="button" title="Publish backlog on Jira" aria-label="Publish backlog on Jira">
+          <span class="pane-menu-item-icon" aria-hidden="true">🌀</span>
+          <span class="pane-menu-item-text">Jira</span>
+          <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
+        </button>
+      </div>
+    `;
+}
+
+function renderPublishInfoModal() {
+    if (state.activePublishInfoTarget !== 'jira') {
+        return '';
+    }
+
+    return `
+      <div class="modal-overlay" id="publish-info-modal-overlay" role="presentation">
+        <section class="modal-card prompt-modal-card" id="publish-info-modal" role="dialog" aria-modal="true" aria-labelledby="publish-info-modal-title">
+          <button class="modal-close" id="close-publish-info-modal" type="button" aria-label="Close dialog">✕</button>
+          <div class="modal-hero prompt-modal-hero">
+            <div class="modal-hero-icon" aria-hidden="true">🌀</div>
+            <div>
+              <span class="kicker">Publish backlog</span>
+              <h2 id="publish-info-modal-title">Jira publishing</h2>
+              <p>
+                Jira publishing is not configured in this demo yet, but this button is reserved for a future Jira backlog publishing flow.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    `;
+}
+
 function bindAssignMenu() {
     document.getElementById('toggle-assign-menu')?.addEventListener('click', () => {
         state.activePaneMenuKey = null;
@@ -936,6 +1002,11 @@ function handleGlobalKeydown(event) {
         return;
     }
 
+    if (state.activePublishInfoTarget) {
+      closePublishInfoModal();
+      return;
+    }
+
     if (state.activePromptKey) {
         closePromptModal();
         return;
@@ -974,6 +1045,23 @@ function handleGlobalClick(event) {
     }
 }
 
+function bindPublishInfoActions() {
+  document.querySelectorAll('[data-publish-info-target]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.activePublishInfoTarget = button.dataset.publishInfoTarget;
+      state.activePaneMenuKey = null;
+      render();
+    });
+  });
+
+  document.getElementById('close-publish-info-modal')?.addEventListener('click', closePublishInfoModal);
+  document.getElementById('publish-info-modal-overlay')?.addEventListener('click', (event) => {
+    if (event.target.id === 'publish-info-modal-overlay') {
+      closePublishInfoModal();
+    }
+  });
+}
+
 function closePromptModal() {
     if (!state.activePromptKey) {
         return;
@@ -984,6 +1072,14 @@ function closePromptModal() {
     render();
 }
 
+function closePublishInfoModal() {
+  if (!state.activePublishInfoTarget) {
+    return;
+  }
+
+  state.activePublishInfoTarget = null;
+  render();
+}
 function closeAgentPreviewModal() {
     if (!state.isAgentPreviewOpen) {
         return;
