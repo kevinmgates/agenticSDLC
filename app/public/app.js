@@ -49,7 +49,7 @@ async function loadData() {
     render();
 
     try {
-    const response = await fetch(getDataEndpoint());
+        const response = await fetch(getDataEndpoint());
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
         }
