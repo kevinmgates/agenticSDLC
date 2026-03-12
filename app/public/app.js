@@ -152,7 +152,7 @@ function render(options = {}) {
           </aside>
           <aside class="publish-card">
             <div class="publish-card-header">
-              <span class="card-header-icon" aria-hidden="true">↗️</span>
+              <span class="card-header-icon" aria-hidden="true">🤖</span>
               <strong>Publish Backlog</strong>
             </div>
             ${renderPublishActions()}
