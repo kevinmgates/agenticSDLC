@@ -38,7 +38,7 @@ const githubPublishIconAsset = getAssetPath('GitHub_Invertocat_White.png');
 const azureDevOpsPublishIconAsset = getAssetPath('azure_devops_logo_freelogovectors.net_.png');
 const jiraPublishIconAsset = getAssetPath('Jira.png');
 const assigneeOptions = [
-  { id: 'github-coding-agent', name: 'GitHub Coding Agent', subtitle: 'AI collaborator', avatarAsset: githubPublishIconAsset },
+    { id: 'github-coding-agent', name: 'GitHub Coding Agent', subtitle: 'AI collaborator', avatarAsset: githubPublishIconAsset },
     { id: 'maya-chen', name: 'Maya Chen', subtitle: 'Senior frontend engineer', avatar: 'MC' },
     { id: 'jordan-lee', name: 'Jordan Lee', subtitle: 'Platform developer', avatar: 'JL' },
     { id: 'priya-patel', name: 'Priya Patel', subtitle: 'Product engineer', avatar: 'PP' },
@@ -1047,12 +1047,12 @@ function bindAgentPreviewModal() {
 }
 
 function bindReviewerPreviewModal() {
-  document.getElementById('close-reviewer-preview-modal')?.addEventListener('click', closeReviewerPreviewModal);
-  document.getElementById('reviewer-preview-modal-overlay')?.addEventListener('click', (event) => {
-    if (event.target.id === 'reviewer-preview-modal-overlay') {
-      closeReviewerPreviewModal();
-    }
-  });
+    document.getElementById('close-reviewer-preview-modal')?.addEventListener('click', closeReviewerPreviewModal);
+    document.getElementById('reviewer-preview-modal-overlay')?.addEventListener('click', (event) => {
+        if (event.target.id === 'reviewer-preview-modal-overlay') {
+            closeReviewerPreviewModal();
+        }
+    });
 }
 
 function bindPaneMenus() {
@@ -1083,10 +1083,10 @@ function handleGlobalKeydown(event) {
         return;
     }
 
-  if (state.activeReviewerPreviewAssigneeId) {
-    closeReviewerPreviewModal();
-    return;
-  }
+    if (state.activeReviewerPreviewAssigneeId) {
+        closeReviewerPreviewModal();
+        return;
+    }
 
     if (state.isAgentPreviewOpen) {
         closeAgentPreviewModal();
@@ -1172,14 +1172,14 @@ function closePublishInfoModal() {
     render();
 }
 
-    function closeReviewerPreviewModal() {
-      if (!state.activeReviewerPreviewAssigneeId) {
+function closeReviewerPreviewModal() {
+    if (!state.activeReviewerPreviewAssigneeId) {
         return;
-      }
-
-      state.activeReviewerPreviewAssigneeId = null;
-      render();
     }
+
+    state.activeReviewerPreviewAssigneeId = null;
+    render();
+}
 
 function closeAgentPreviewModal() {
     if (!state.isAgentPreviewOpen) {
@@ -1207,14 +1207,14 @@ function toggleAssignee(assigneeId) {
         state.isAssignMenuOpen = false;
         state.activePaneMenuKey = null;
         state.activePromptKey = null;
-      state.activeReviewerPreviewAssigneeId = null;
+        state.activeReviewerPreviewAssigneeId = null;
         state.isAgentPreviewOpen = true;
     } else if (assigneeId !== 'github-coding-agent' && !isSelected) {
-      state.isAssignMenuOpen = false;
-      state.activePaneMenuKey = null;
-      state.activePromptKey = null;
-      state.isAgentPreviewOpen = false;
-      state.activeReviewerPreviewAssigneeId = assigneeId;
+        state.isAssignMenuOpen = false;
+        state.activePaneMenuKey = null;
+        state.activePromptKey = null;
+        state.isAgentPreviewOpen = false;
+        state.activeReviewerPreviewAssigneeId = assigneeId;
     }
 
     render();
