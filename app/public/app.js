@@ -10,6 +10,7 @@ const state = {
     activePublishInfoTarget: null,
     activePromptKey: null,
     isAgentPreviewOpen: false,
+    activeReviewerPreviewAssigneeId: null,
     activePaneMenuKey: null,
     isAssignMenuOpen: false,
     selectedAssignees: [],
@@ -37,7 +38,7 @@ const githubPublishIconAsset = getAssetPath('GitHub_Invertocat_White.png');
 const azureDevOpsPublishIconAsset = getAssetPath('azure_devops_logo_freelogovectors.net_.png');
 const jiraPublishIconAsset = getAssetPath('Jira.png');
 const assigneeOptions = [
-    { id: 'github-coding-agent', name: 'GitHub Coding Agent', subtitle: 'AI collaborator', avatar: '🤖' },
+  { id: 'github-coding-agent', name: 'GitHub Coding Agent', subtitle: 'AI collaborator', avatarAsset: githubPublishIconAsset },
     { id: 'maya-chen', name: 'Maya Chen', subtitle: 'Senior frontend engineer', avatar: 'MC' },
     { id: 'jordan-lee', name: 'Jordan Lee', subtitle: 'Platform developer', avatar: 'JL' },
     { id: 'priya-patel', name: 'Priya Patel', subtitle: 'Product engineer', avatar: 'PP' },
@@ -176,6 +177,7 @@ function render(options = {}) {
       </section>
       ${renderPromptModal()}
       ${renderAgentPreviewModal()}
+      ${renderReviewerPreviewModal()}
       ${renderPublishInfoModal()}
       <button class="floating-refresh-button" id="refresh-data" type="button" aria-label="Refresh data" title="Refresh data">
         <span aria-hidden="true">↻</span>
@@ -214,6 +216,7 @@ function render(options = {}) {
     bindPublishInfoActions();
     bindAssignMenu();
     bindAgentPreviewModal();
+    bindReviewerPreviewModal();
     bindGlobalInteractions();
 
     if (focusColumnId) {
@@ -385,7 +388,7 @@ function renderEpicsColumn(epics, selectedEpic) {
             paneKey: 'epics',
             items: [
                 { type: 'prompt', promptKey: 'epics', label: 'View prompt file', icon: '</>' },
-                { type: 'link', href: `${githubRepoBaseUrl}/milestones`, label: 'View on GitHub', icon: '🐱', title: 'Open GitHub milestones for epics' },
+                { type: 'link', href: `${githubRepoBaseUrl}/milestones`, label: 'View on GitHub', iconAsset: githubPublishIconAsset, title: 'Open GitHub milestones for epics' },
             ],
         })}
             <span class="badge">${epics.length}</span>
@@ -440,7 +443,7 @@ function renderFeaturesColumn(features, selectedFeature, selectedEpic) {
             paneKey: 'features',
             items: [
                 { type: 'prompt', promptKey: 'features', label: 'View prompt file', icon: '</>' },
-                { type: 'link', href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [FEATURE]')}`, label: 'View on GitHub', icon: '🐱', title: 'Open GitHub issues filtered to features' },
+                { type: 'link', href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [FEATURE]')}`, label: 'View on GitHub', iconAsset: githubPublishIconAsset, title: 'Open GitHub issues filtered to features' },
             ],
         })}
             <span class="badge">${features.length}</span>
@@ -498,7 +501,7 @@ function renderStoriesColumn(stories, selectedStory, selectedFeature) {
             paneKey: 'stories',
             items: [
                 { type: 'prompt', promptKey: 'stories', label: 'View prompt file', icon: '</>' },
-                { type: 'link', href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [STORY]')}`, label: 'View on GitHub', icon: '🐱', title: 'Open GitHub issues filtered to user stories' },
+                { type: 'link', href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [STORY]')}`, label: 'View on GitHub', iconAsset: githubPublishIconAsset, title: 'Open GitHub issues filtered to user stories' },
             ],
         })}
             <span class="badge">${stories.length}</span>
@@ -631,7 +634,7 @@ function renderPaneMenuItem(item) {
 
     return `
       <a class="pane-menu-item pane-menu-link" href="${escapeHtml(item.href)}" target="_blank" rel="noreferrer" title="${escapeHtml(item.title || item.label)}" aria-label="${escapeHtml(item.title || item.label)}" role="menuitem">
-        <span class="pane-menu-item-icon" aria-hidden="true">${escapeHtml(item.icon)}</span>
+        <span class="pane-menu-item-icon" aria-hidden="true">${item.iconAsset ? `<img class="pane-menu-icon-image" src="${escapeHtml(item.iconAsset)}" alt="" />` : escapeHtml(item.icon || '')}</span>
         <span class="pane-menu-item-text">${escapeHtml(item.label)}</span>
         <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
       </a>
@@ -667,7 +670,7 @@ function renderAssignMenu() {
                 return `
                 <label class="assign-option" for="assignee-${escapeHtml(option.id)}">
                   <input id="assignee-${escapeHtml(option.id)}" class="assign-checkbox" data-assignee-id="${escapeHtml(option.id)}" type="checkbox" ${isSelected ? 'checked' : ''} />
-                  <span class="assign-avatar" aria-hidden="true">${escapeHtml(option.avatar)}</span>
+                  <span class="assign-avatar" aria-hidden="true">${option.avatarAsset ? `<img class="assign-avatar-image" src="${escapeHtml(option.avatarAsset)}" alt="" />` : escapeHtml(option.avatar)}</span>
                   <span class="assign-meta">
                     <span class="assign-name">${escapeHtml(option.name)}</span>
                     <span class="assign-subtitle">${escapeHtml(option.subtitle)}</span>
@@ -730,7 +733,7 @@ function renderPromptModal() {
           <div class="prompt-file-meta-row">
             <div class="prompt-file-meta">${escapeHtml(promptFile.path)}</div>
             <a class="pane-menu-item pane-menu-link prompt-modal-link" href="${escapeHtml(promptGitHubUrl)}" target="_blank" rel="noreferrer" title="View on GitHub" aria-label="View prompt file on GitHub">
-              <span class="pane-menu-item-icon" aria-hidden="true">🐱</span>
+              <span class="pane-menu-item-icon" aria-hidden="true"><img class="pane-menu-icon-image" src="${escapeHtml(githubPublishIconAsset)}" alt="" /></span>
               <span class="pane-menu-item-text">View on GitHub</span>
               <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
             </a>
@@ -764,6 +767,42 @@ function renderAgentPreviewModal() {
           </div>
           <figure class="modal-image-frame">
             <img class="modal-image" src="https://github.blog/wp-content/uploads/2025/09/GitHub-Copilot-Changelog-Sept-25-2025-1.webp?fit=2048%2C1075" alt="Large preview of the GitHub Coding Agent assignment experience" />
+          </figure>
+        </section>
+      </div>
+    `;
+}
+
+function renderReviewerPreviewModal() {
+    if (!state.activeReviewerPreviewAssigneeId) {
+        return '';
+    }
+
+    const assignee = assigneeOptions.find((option) => option.id === state.activeReviewerPreviewAssigneeId);
+    if (!assignee) {
+        return '';
+    }
+
+    return `
+      <div class="modal-overlay" id="reviewer-preview-modal-overlay" role="presentation">
+        <section class="modal-card agent-preview-modal-card" id="reviewer-preview-modal" role="dialog" aria-modal="true" aria-labelledby="reviewer-preview-modal-title">
+          <button class="modal-close" id="close-reviewer-preview-modal" type="button" aria-label="Close dialog">✕</button>
+          <div class="modal-hero">
+            <div class="modal-hero-icon" aria-hidden="true">🧑‍💻</div>
+            <div>
+              <span class="kicker">Human + reviewer agent</span>
+              <h2 id="reviewer-preview-modal-title">${escapeHtml(assignee.name)} assigned with GitHub Copilot reviewer</h2>
+              <p>
+                The feature spec is assigned to ${escapeHtml(assignee.name)}, with GitHub Copilot reviewer agent added to support review and feedback.
+              </p>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="meta-chip">${escapeHtml(assignee.subtitle)}</span>
+            <span class="meta-chip">GitHub Copilot reviewer agent</span>
+          </div>
+          <figure class="modal-image-frame">
+            <img class="modal-image" src="https://github.blog/wp-content/uploads/2025/09/GitHub-Copilot-Changelog-Sept-25-2025-1.webp?fit=2048%2C1075" alt="Preview of the GitHub Copilot reviewer agent experience" />
           </figure>
         </section>
       </div>
@@ -1007,6 +1046,15 @@ function bindAgentPreviewModal() {
     });
 }
 
+function bindReviewerPreviewModal() {
+  document.getElementById('close-reviewer-preview-modal')?.addEventListener('click', closeReviewerPreviewModal);
+  document.getElementById('reviewer-preview-modal-overlay')?.addEventListener('click', (event) => {
+    if (event.target.id === 'reviewer-preview-modal-overlay') {
+      closeReviewerPreviewModal();
+    }
+  });
+}
+
 function bindPaneMenus() {
     document.querySelectorAll('[data-pane-menu-toggle]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -1034,6 +1082,11 @@ function handleGlobalKeydown(event) {
     if (event.key !== 'Escape') {
         return;
     }
+
+  if (state.activeReviewerPreviewAssigneeId) {
+    closeReviewerPreviewModal();
+    return;
+  }
 
     if (state.isAgentPreviewOpen) {
         closeAgentPreviewModal();
@@ -1118,6 +1171,16 @@ function closePublishInfoModal() {
     state.activePublishInfoTarget = null;
     render();
 }
+
+    function closeReviewerPreviewModal() {
+      if (!state.activeReviewerPreviewAssigneeId) {
+        return;
+      }
+
+      state.activeReviewerPreviewAssigneeId = null;
+      render();
+    }
+
 function closeAgentPreviewModal() {
     if (!state.isAgentPreviewOpen) {
         return;
@@ -1144,7 +1207,14 @@ function toggleAssignee(assigneeId) {
         state.isAssignMenuOpen = false;
         state.activePaneMenuKey = null;
         state.activePromptKey = null;
+      state.activeReviewerPreviewAssigneeId = null;
         state.isAgentPreviewOpen = true;
+    } else if (assigneeId !== 'github-coding-agent' && !isSelected) {
+      state.isAssignMenuOpen = false;
+      state.activePaneMenuKey = null;
+      state.activePromptKey = null;
+      state.isAgentPreviewOpen = false;
+      state.activeReviewerPreviewAssigneeId = assigneeId;
     }
 
     render();

@@ -224,6 +224,10 @@ button {
     justify-content: center;
 }
 
+.publish-card {
+    justify-content: flex-start;
+}
+
 .summary-header {
     display: flex;
     align-items: center;
@@ -429,6 +433,13 @@ button {
     line-height: 1;
 }
 
+.pane-menu-icon-image {
+    display: block;
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+}
+
 .pane-menu-item-text {
     font-size: 0.84rem;
     font-weight: 600;
@@ -526,6 +537,13 @@ button {
     background: rgba(59, 130, 246, 0.16);
     font-size: 0.8rem;
     font-weight: 700;
+}
+
+.assign-avatar-image {
+    display: block;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
 }
 
 .assign-meta {
