@@ -11,7 +11,7 @@ A Microsoft services engagement team has just completed a scoping call with a cu
 
 1. **Reads** the meeting transcript
 2. **Extracts** structured requirements
-3. **Generates** epics, features, and user stories
+3. **Generates** epics, features, user stories and technical specs
 4. **Pushes** the entire backlog directly to Azure DevOps or GitHub — live, in front of the customer
 
 ---
