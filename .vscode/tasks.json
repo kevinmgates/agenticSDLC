@@ -66,6 +66,20 @@
       "problemMatcher": []
     },
     {
+      "label": "📐 Stage 3.5: Generate Specs",
+      "type": "shell",
+      "command": "echo 'Open Copilot Chat and run: @workspace #file:prompts/04b-generate-specs.md — specify which FEAT-ID to generate a spec for, or ask Copilot to generate specs for all features.'",
+      "group": "none",
+      "dependsOn": "📝 Stage 3: Generate User Stories",
+      "dependsOrder": "sequence",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "🐙 Stage 4A: Push to GitHub (MCP)",
       "type": "shell",
       "command": "echo 'Switch Copilot to Agent Mode and run: @workspace #file:prompts/05-push-to-github.md'",
@@ -104,7 +118,7 @@
     {
       "label": "🔄 Reset: Clear Generated Outputs",
       "type": "shell",
-      "command": "rm -f stages/02-requirements/requirements.md stages/03-backlog/*.json stages/04-devops/*.md && echo 'Outputs cleared. Ready for fresh demo run.'",
+      "command": "rm -f stages/02-requirements/requirements.md stages/03-backlog/*.json stages/03-backlog/specs/*.md stages/04-devops/*.md && echo 'Outputs cleared. Ready for fresh demo run.'",
       "group": "none",
       "presentation": {
         "reveal": "always",

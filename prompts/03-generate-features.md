@@ -14,6 +14,33 @@ Output the result as a JSON file to:
 
 ---
 
+## HARD EXECUTION RULES
+
+You must create `stages/03-backlog/features.json` directly in the workspace.
+
+Returning the JSON in chat is a failure.
+
+### Mode check
+- If file-creation capability is available, write the JSON file directly.
+- If not, stop immediately and reply exactly:
+
+`Switch to Agent mode so I can create the output file.`
+
+### Forbidden behavior
+- Do NOT paste JSON in chat
+- Do NOT provide partial features in chat
+- Do NOT ask the user to manually create the file
+- Do NOT stop unless `stages/03-backlog/features.json` has been created and verified
+
+### Required behavior
+1. Read `stages/02-requirements/requirements.md` and `stages/03-backlog/epics.json`
+2. Generate the full JSON
+3. Write it directly to `stages/03-backlog/features.json`
+4. Verify the file exists
+5. Reply only with a short completion note
+
+---
+
 ## Output Format
 
 Output a valid JSON array. Each feature must follow this exact schema:
@@ -55,3 +82,6 @@ Output a valid JSON array. Each feature must follow this exact schema:
 - Acceptance criteria must use Given/When/Then format
 - `definition_of_done` should include standard quality gates relevant to this type of feature
 - Output only valid JSON — no markdown, no commentary outside the JSON array
+- Final response must be a short confirmation only, not the JSON content
+
+````

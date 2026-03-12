@@ -10,6 +10,33 @@ Read the following files:
 
 ---
 
+## HARD EXECUTION RULES
+
+You must perform the Azure DevOps operations directly and write the log file directly.
+
+Describing what you would do without creating work items, links, and log output is a failure.
+
+### Mode/tool check
+- If Azure DevOps work item tools and file-writing capability are available, execute the workflow.
+- If either is unavailable, stop immediately and reply exactly:
+
+`Switch to Agent mode with Azure DevOps tool access so I can execute the backlog push.`
+
+### Forbidden behavior
+- Do NOT only summarize the hierarchy in chat
+- Do NOT stop after partial hierarchy creation unless a real tool failure prevents continuation
+- Do NOT skip writing `stages/04-devops/ado-push-log.md`
+
+### Required behavior
+1. Read the backlog files
+2. Create Epics, Features, User Stories, and optional Tasks in order
+3. Create required parent-child links
+4. Continue past individual failures and log them
+5. Write `stages/04-devops/ado-push-log.md`
+6. Reply only with a short completion note
+
+---
+
 ## Work Item Hierarchy
 Azure DevOps uses this hierarchy (top to bottom):
 ```
@@ -77,3 +104,6 @@ After all work items are created, write a summary to `stages/04-devops/ado-push-
 - Parent links must be created — an unlinked backlog is not useful for the demo
 - If a work item fails, log it and continue
 - Area Path and Iteration Path: use the project root defaults unless otherwise configured
+- Final response must be a short confirmation only, not a restatement of the hierarchy
+
+````

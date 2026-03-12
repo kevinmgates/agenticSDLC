@@ -28,6 +28,7 @@ sdlc-agent-demo/
 │   ├── 01-transcript/      # INPUT: Raw meeting transcript
 │   ├── 02-requirements/    # AI-generated: Requirements doc
 │   ├── 03-backlog/         # AI-generated: Epics, Features, Stories
+│   │   └── specs/          # AI-generated: Technical specs (one per feature)
 │   └── 04-devops/          # AI-generated: Push logs
 ├── prompts/                # Copilot prompt files (one per stage)
 ├── .env.example            # Token configuration template
@@ -101,6 +102,7 @@ Open the VS Code Tasks panel: `Terminal → Run Task`
 | 🗂️ Stage 2→3A | Generates epics JSON |
 | 🧩 Stage 2→3B | Generates features JSON |
 | 📝 Stage 3 | Generates user stories JSON |
+| 📐 Stage 3.5 | Generates technical specs (one per feature) |
 | 🐙 Stage 4A | Agent pushes backlog to GitHub |
 | 🔷 Stage 4B | Agent pushes backlog to Azure DevOps |
 | ✅ Validate | Checks all stage outputs exist |
@@ -111,8 +113,9 @@ Open the VS Code Tasks panel: `Terminal → Run Task`
 1. Run the task to see the prompt instruction
 2. Open **Copilot Chat** (Ctrl+Alt+I / Cmd+Alt+I)
 3. For Stages 1-3: use **Chat mode** with `@workspace`
-4. For Stage 4: switch to **Agent mode** — Copilot will call MCP tools automatically
-5. Paste or reference the relevant prompt file from `/prompts/`
+4. For Stage 3.5: use **Chat mode** — target a specific feature (`generate a spec for FEAT-003`) or ask Copilot to loop through all features
+5. For Stage 4: switch to **Agent mode** — Copilot will call MCP tools automatically
+6. Paste or reference the relevant prompt file from `/prompts/`
 
 ### Option B: Chained (advanced)
 In Agent mode, you can run the entire pipeline with a single prompt:
@@ -130,11 +133,13 @@ In Agent mode, you can run the entire pipeline with a single prompt:
 
 **[6:00]** Run Stage 2→3B + Stage 3. *"Features and user stories, all linked back to requirements."* Show the hierarchy in `features.json` and `user-stories.json`.
 
-**[9:00]** Switch to Agent mode. Open GitHub or ADO — show it empty.
+**[8:00]** Run Stage 3.5. *"Now watch it generate a full technical spec for each feature — data models, API contracts, edge cases, acceptance criteria."* Show a spec file appearing in `stages/03-backlog/specs/`. *"This is what a developer — or an AI coding agent — works from."*
 
-**[10:00]** Run Stage 4. *"Watch the agent call MCP tools in real time."* Let the audience see the tool calls in Copilot Chat.
+**[11:00]** Switch to Agent mode. Open GitHub or ADO — show it empty.
 
-**[13:00]** Refresh GitHub/ADO. Show the fully populated backlog. *"From transcript to backlog — in minutes."*
+**[12:00]** Run Stage 4. *"Watch the agent call MCP tools in real time."* Let the audience see the tool calls in Copilot Chat.
+
+**[15:00]** Refresh GitHub/ADO. Show the fully populated backlog. *"From transcript to backlog — in minutes."*
 
 ---
 
@@ -152,6 +157,7 @@ In Agent mode, you can run the entire pipeline with a single prompt:
 - [ ] Web UI to replace the VS Code task runner
 - [ ] Drag-and-drop transcript upload
 - [ ] Backlog review/editing step before pushing
+- [ ] Feed specs directly into Copilot to generate scaffolded code (`implement this spec`)
 - [ ] Sprint assignment and capacity planning stage
 - [ ] Teams notification when backlog is ready
 - [ ] Support for audio transcript input (Whisper integration)

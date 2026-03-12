@@ -10,6 +10,32 @@ Read the following files:
 
 ---
 
+## HARD EXECUTION RULES
+
+You must perform the GitHub operations directly and write the log file directly.
+
+Describing what you would do without creating milestones/issues/log output is a failure.
+
+### Mode/tool check
+- If GitHub work-item creation and file-writing capability are available, execute the full workflow.
+- If either is unavailable, stop immediately and reply exactly:
+
+`Switch to Agent mode with GitHub tool access so I can execute the backlog push.`
+
+### Forbidden behavior
+- Do NOT only summarize the backlog in chat
+- Do NOT stop after creating only some items unless a real tool failure prevents continuation
+- Do NOT skip writing `stages/04-devops/github-push-log.md`
+
+### Required behavior
+1. Read the backlog files
+2. Create milestones, labels, feature issues, and story issues
+3. Continue past individual item failures and log them
+4. Write `stages/04-devops/github-push-log.md`
+5. Reply only with a short completion note
+
+---
+
 ## Instructions
 
 ### Step 1 — Create Milestones for Epics
@@ -84,3 +110,6 @@ After all issues are created, write a summary to `stages/04-devops/github-push-l
 - Process items in order: Epics → Features → Stories (dependencies flow downward)
 - If an item fails to create, log the error and continue — do not abort the entire run
 - Use the exact label names specified — create labels if they don't exist in the repo
+- Final response must be a short confirmation only, not a restatement of the backlog
+
+````
