@@ -7,11 +7,16 @@ const state = {
     selectedEpicId: null,
     selectedFeatureId: null,
     selectedStoryId: null,
-  isCodingAgentModalOpen: false,
+    activePromptKey: null,
+    isAgentPreviewOpen: false,
+    activePaneMenuKey: null,
+    isAssignMenuOpen: false,
+    selectedAssignees: [],
     paneWidths: loadPaneWidths(),
 };
 
-let hasBoundModalKeyboardHandler = false;
+let hasBoundGlobalKeyboardHandler = false;
+let hasBoundGlobalClickHandler = false;
 
 const defaultPaneWidths = {
     'transcript-column': 380,
@@ -25,6 +30,12 @@ const defaultPaneWidths = {
 const minPaneWidth = 300;
 const maxPaneWidth = 1200;
 const githubRepoBaseUrl = 'https://github.com/kevinmgates/agenticSDLC';
+const assigneeOptions = [
+    { id: 'github-coding-agent', name: 'GitHub Coding Agent', subtitle: 'AI collaborator', avatar: '🤖' },
+    { id: 'maya-chen', name: 'Maya Chen', subtitle: 'Senior frontend engineer', avatar: 'MC' },
+    { id: 'jordan-lee', name: 'Jordan Lee', subtitle: 'Platform developer', avatar: 'JL' },
+    { id: 'priya-patel', name: 'Priya Patel', subtitle: 'Product engineer', avatar: 'PP' },
+];
 
 bootstrap();
 
@@ -117,14 +128,13 @@ function render(options = {}) {
     <main class="app-shell">
       <section class="hero">
         <article class="hero-card">
-          <span class="kicker">Agentic SDLC Visualizer</span>
+          <span class="kicker">Scopilot </span>
           <h1>Ship Faster. Start Smarter.</h1>
-          <p>AI agents that transform scoping calls into structured backlogs in minutes, not days.</p>
+          <p>Scoping calls transformed into structured backlogs in minutes with AI agents. That's Scopilot.</p>
         </article>
         <aside class="summary-card">
           <div>
-            <strong>Stage snapshot</strong>
-            <div class="subtle">Generated from local files in real time whenever you refresh.</div>
+            <strong>Backlog snapshot</strong>
           </div>
           <div class="summary-grid">
             ${summaryPill(data.summary.epicCount, 'Epics')}
@@ -143,7 +153,8 @@ function render(options = {}) {
         ${renderStoriesColumn(storiesForFeature, selectedStory, selectedFeature)}
         ${renderDetailColumn(selectedFeature, selectedStory, selectedSpec)}
       </section>
-      ${renderCodingAgentModal()}
+      ${renderPromptModal()}
+      ${renderAgentPreviewModal()}
       <button class="floating-refresh-button" id="refresh-data" type="button" aria-label="Refresh data" title="Refresh data">
         <span aria-hidden="true">↻</span>
       </button>
@@ -166,17 +177,21 @@ function render(options = {}) {
     bindCardSelection('.feature-card', (id) => {
         state.selectedFeatureId = id;
         state.selectedStoryId = data.userStories.find((story) => story.feature_id === id)?.id || null;
-      render({ focusColumnId: 'stories-column' });
+        render({ focusColumnId: 'stories-column' });
     });
 
     bindCardSelection('.story-card', (id) => {
         state.selectedStoryId = id;
-      render({ focusColumnId: 'detail-column' });
+        render({ focusColumnId: 'detail-column' });
     });
 
     bindPaneResizers();
     bindRequirementsOutline();
-    bindCodingAgentModal();
+    bindPaneMenus();
+    bindPromptActions();
+    bindAssignMenu();
+    bindAgentPreviewModal();
+    bindGlobalInteractions();
 
     if (focusColumnId) {
         scrollColumnIntoView(focusColumnId);
@@ -250,10 +265,18 @@ function renderRequirementsColumn(requirements) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2>2. Requirements</h2>
+            <h2 class="pane-title">2. Requirements ${renderAiEnhancementBadge('requirements')}</h2>
             <div class="column-subtitle">Structured needs extracted from the transcript and organized into project, functional, non-functional, and integration views.</div>
           </div>
-          <span class="badge">${requirements.sections.length}</span>
+          <div class="column-header-actions">
+            ${renderPaneMenu({
+            paneKey: 'requirements',
+            items: [
+                { type: 'prompt', promptKey: 'requirements', label: 'View prompt file', icon: '</>' },
+            ],
+        })}
+            <span class="badge">${requirements.sections.length}</span>
+          </div>
         </div>
         <div class="column-path">${escapeHtml(requirements.path)}</div>
       </header>
@@ -290,8 +313,8 @@ function renderRequirementsOutline(sections) {
         </div>
         <div class="requirements-outline-list">
           ${groups
-                .map(
-                    (group, index) => `
+            .map(
+                (group, index) => `
                 <div class="outline-group">
                   <button class="outline-chip outline-chip-primary" data-target-section="${escapeHtml(group.id)}" type="button">
                     <span class="outline-index">${index + 1}</span>
@@ -300,21 +323,21 @@ function renderRequirementsOutline(sections) {
                   ${group.children.length
                         ? `<div class="outline-children">
                           ${group.children
-                              .map(
-                                  (child) => `
+                            .map(
+                                (child) => `
                               <button class="outline-chip outline-chip-secondary" data-target-section="${escapeHtml(child.id)}" type="button">
                                 <span class="outline-bullet" aria-hidden="true"></span>
                                 <span class="outline-text">${escapeHtml(child.title)}</span>
                               </button>
                             `,
-                              )
-                              .join('')}
+                            )
+                            .join('')}
                         </div>`
                         : ''}
                 </div>
               `,
-                )
-                .join('')}
+            )
+            .join('')}
         </div>
       </section>
     `;
@@ -327,15 +350,17 @@ function renderEpicsColumn(epics, selectedEpic) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2>3. Epics</h2>
+            <h2 class="pane-title">3. Epics ${renderAiEnhancementBadge('epics')}</h2>
             <div class="column-subtitle">Strategic workstreams derived from the requirements set.</div>
           </div>
           <div class="column-header-actions">
-            ${renderGithubFilterLink({
-                href: `${githubRepoBaseUrl}/milestones`,
-                label: 'GitHub',
-                title: 'Open GitHub milestones for epics',
-            })}
+            ${renderPaneMenu({
+            paneKey: 'epics',
+            items: [
+                { type: 'prompt', promptKey: 'epics', label: 'View prompt file', icon: '</>' },
+                { type: 'link', href: `${githubRepoBaseUrl}/milestones`, label: 'View on GitHub', icon: '🐱', title: 'Open GitHub milestones for epics' },
+            ],
+        })}
             <span class="badge">${epics.length}</span>
           </div>
         </div>
@@ -380,15 +405,17 @@ function renderFeaturesColumn(features, selectedFeature, selectedEpic) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2>4. Features</h2>
+            <h2 class="pane-title">4. Features ${renderAiEnhancementBadge('features')}</h2>
             <div class="column-subtitle">Feature breakdown for ${escapeHtml(selectedEpic.id)} — ${escapeHtml(selectedEpic.title)}.</div>
           </div>
           <div class="column-header-actions">
-            ${renderGithubFilterLink({
-                href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [FEATURE]')}`,
-                label: 'GitHub',
-                title: 'Open GitHub issues filtered to features',
-            })}
+            ${renderPaneMenu({
+            paneKey: 'features',
+            items: [
+                { type: 'prompt', promptKey: 'features', label: 'View prompt file', icon: '</>' },
+                { type: 'link', href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [FEATURE]')}`, label: 'View on GitHub', icon: '🐱', title: 'Open GitHub issues filtered to features' },
+            ],
+        })}
             <span class="badge">${features.length}</span>
           </div>
         </div>
@@ -436,15 +463,17 @@ function renderStoriesColumn(stories, selectedStory, selectedFeature) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2>5. User Stories</h2>
+            <h2 class="pane-title">5. User Stories ${renderAiEnhancementBadge('stories')}</h2>
             <div class="column-subtitle">Delivery-ready stories for ${escapeHtml(selectedFeature.id)} — ${escapeHtml(selectedFeature.title)}.</div>
           </div>
           <div class="column-header-actions">
-            ${renderGithubFilterLink({
-                href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [STORY]')}`,
-                label: 'GitHub',
-                title: 'Open GitHub issues filtered to user stories',
-            })}
+            ${renderPaneMenu({
+            paneKey: 'stories',
+            items: [
+                { type: 'prompt', promptKey: 'stories', label: 'View prompt file', icon: '</>' },
+                { type: 'link', href: `${githubRepoBaseUrl}/issues?q=${encodeURIComponent('is:issue [STORY]')}`, label: 'View on GitHub', icon: '🐱', title: 'Open GitHub issues filtered to user stories' },
+            ],
+        })}
             <span class="badge">${stories.length}</span>
           </div>
         </div>
@@ -486,15 +515,17 @@ function renderDetailColumn(selectedFeature, selectedStory, selectedSpec) {
       <header class="column-header">
         <div class="column-title-row">
           <div>
-            <h2>6. Feature Spec</h2>
+            <h2 class="pane-title">6. Feature Spec ${renderAiEnhancementBadge('detail')}</h2>
             <div class="column-subtitle">Implementation context, selected story focus, and the full spec document.</div>
           </div>
           <div class="column-header-actions">
-            <button class="agent-button" id="open-coding-agent-modal" type="button" aria-haspopup="dialog" aria-expanded="${state.isCodingAgentModalOpen ? 'true' : 'false'}">
-              <span class="agent-button-icon" aria-hidden="true">✦</span>
-              <span>Send to GitHub Coding Agent</span>
-            </button>
-            <span class="badge">${selectedFeature && selectedSpec ? 'Spec' : 'Draft'}</span>
+            ${renderAssignButton()}
+            ${renderPaneMenu({
+            paneKey: 'detail',
+            items: [
+                { type: 'prompt', promptKey: 'detail', label: 'View prompt file', icon: '</>' },
+            ],
+        })}
           </div>
         </div>
         <div class="column-path">${escapeHtml(selectedFeature ? (selectedSpec?.path || 'No spec file found for this feature yet') : 'Select a feature to review its implementation detail and spec markdown.')}</div>
@@ -510,8 +541,8 @@ function renderDetailColumn(selectedFeature, selectedStory, selectedSpec) {
               <span class="meta-chip">Size ${escapeHtml(selectedFeature.estimated_size)}</span>
             </div>
             <div class="tag-row">${selectedFeature.linked_requirements
-                .map((requirement) => `<span class="tag">${escapeHtml(requirement)}</span>`)
-                .join('')}</div>
+                    .map((requirement) => `<span class="tag">${escapeHtml(requirement)}</span>`)
+                    .join('')}</div>
           </section>
           ${renderSelectedStoryDetail(selectedStory)}
           ${renderSpecDetail(selectedSpec)}
@@ -521,40 +552,150 @@ function renderDetailColumn(selectedFeature, selectedStory, selectedSpec) {
     });
 }
 
-function renderGithubFilterLink({ href, label, title }) {
+function renderPaneMenu({ paneKey, items }) {
     return `
-      <a class="github-filter-link" href="${escapeHtml(href)}" target="_blank" rel="noreferrer" title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}">
-        <span class="github-filter-icon" aria-hidden="true">↗</span>
-        <span>${escapeHtml(label)}</span>
+      <div class="pane-menu-shell">
+        <button class="header-icon-button pane-menu-trigger" data-pane-menu-toggle="${escapeHtml(paneKey)}" type="button" title="Open pane menu" aria-label="Open pane menu" aria-haspopup="menu" aria-expanded="${state.activePaneMenuKey === paneKey ? 'true' : 'false'}">
+          <span class="header-icon-symbol" aria-hidden="true">⋯</span>
+        </button>
+        ${state.activePaneMenuKey === paneKey ? renderPaneMenuItems(items) : ''}
+      </div>
+    `;
+}
+
+function renderAiEnhancementBadge(promptKey) {
+    return `
+      <button class="ai-enhancement-badge" data-menu-prompt-key="${escapeHtml(promptKey)}" type="button" title="View prompt file" aria-label="View prompt file for AI enhanced stage">
+        <span class="ai-enhancement-icon" aria-hidden="true">🪄</span>
+        <span>AI</span>
+      </button>
+    `;
+}
+
+function renderPaneMenuItems(items) {
+    return `
+      <div class="pane-menu" role="menu">
+        ${items.map((item) => renderPaneMenuItem(item)).join('')}
+      </div>
+    `;
+}
+
+function renderPaneMenuItem(item) {
+    if (item.type === 'prompt') {
+        return `
+          <button class="pane-menu-item" data-menu-prompt-key="${escapeHtml(item.promptKey)}" type="button" role="menuitem">
+            <span class="pane-menu-item-icon code-symbol" aria-hidden="true">${escapeHtml(item.icon)}</span>
+            <span class="pane-menu-item-text">${escapeHtml(item.label)}</span>
+          </button>
+        `;
+    }
+
+    return `
+      <a class="pane-menu-item pane-menu-link" href="${escapeHtml(item.href)}" target="_blank" rel="noreferrer" title="${escapeHtml(item.title || item.label)}" aria-label="${escapeHtml(item.title || item.label)}" role="menuitem">
+        <span class="pane-menu-item-icon" aria-hidden="true">${escapeHtml(item.icon)}</span>
+        <span class="pane-menu-item-text">${escapeHtml(item.label)}</span>
+        <span class="pane-menu-item-trailing" aria-hidden="true">↗</span>
       </a>
     `;
 }
 
-function renderCodingAgentModal() {
-    if (!state.isCodingAgentModalOpen) {
+function renderAssignButton() {
+    const selectedCount = state.selectedAssignees.length;
+
+    return `
+      <div class="assign-shell">
+        <button class="assign-button" id="toggle-assign-menu" type="button" aria-haspopup="menu" aria-expanded="${state.isAssignMenuOpen ? 'true' : 'false'}">
+          <span>Assign</span>
+          ${selectedCount ? `<span class="assign-count">${selectedCount}</span>` : ''}
+          <span class="assign-caret" aria-hidden="true">▾</span>
+        </button>
+        ${state.isAssignMenuOpen ? renderAssignMenu() : ''}
+      </div>
+    `;
+}
+
+function renderAssignMenu() {
+    return `
+      <section class="assign-menu" id="assign-menu" role="menu" aria-label="Assign reviewers">
+        <div class="assign-menu-header">
+          <strong>Assign</strong>
+          <span class="subtle">Select one or more assignees</span>
+        </div>
+        <div class="assign-menu-list">
+          ${assigneeOptions
+            .map((option) => {
+                const isSelected = state.selectedAssignees.includes(option.id);
+                return `
+                <label class="assign-option" for="assignee-${escapeHtml(option.id)}">
+                  <input id="assignee-${escapeHtml(option.id)}" class="assign-checkbox" data-assignee-id="${escapeHtml(option.id)}" type="checkbox" ${isSelected ? 'checked' : ''} />
+                  <span class="assign-avatar" aria-hidden="true">${escapeHtml(option.avatar)}</span>
+                  <span class="assign-meta">
+                    <span class="assign-name">${escapeHtml(option.name)}</span>
+                    <span class="assign-subtitle">${escapeHtml(option.subtitle)}</span>
+                  </span>
+                </label>
+              `;
+            })
+            .join('')}
+        </div>
+      </section>
+    `;
+}
+
+function renderPromptModal() {
+    if (!state.activePromptKey) {
+        return '';
+    }
+
+    const promptFile = state.data?.promptFiles?.[state.activePromptKey];
+    if (!promptFile) {
         return '';
     }
 
     return `
-      <div class="modal-overlay" id="coding-agent-modal-overlay" role="presentation">
-        <section class="modal-card" id="coding-agent-modal" role="dialog" aria-modal="true" aria-labelledby="coding-agent-modal-title">
-          <button class="modal-close" id="close-coding-agent-modal" type="button" aria-label="Close dialog">✕</button>
+      <div class="modal-overlay" id="prompt-modal-overlay" role="presentation">
+        <section class="modal-card prompt-modal-card" id="prompt-modal" role="dialog" aria-modal="true" aria-labelledby="prompt-modal-title">
+          <button class="modal-close" id="close-prompt-modal" type="button" aria-label="Close dialog">✕</button>
+          <div class="modal-hero prompt-modal-hero">
+            <div class="modal-hero-icon" aria-hidden="true">&lt;/&gt;</div>
+            <div>
+              <span class="kicker">Prompt file</span>
+              <h2 id="prompt-modal-title">${escapeHtml(promptFile.title)}</h2>
+              <p>
+                This is the prompt used to generate the selected pane's output. Review it locally before rerunning or adapting the stage.
+              </p>
+            </div>
+          </div>
+          <div class="prompt-file-meta">${escapeHtml(promptFile.path)}</div>
+          <div class="prompt-content-shell">
+            <pre class="prompt-content"><code>${escapeHtml(promptFile.markdown)}</code></pre>
+          </div>
+        </section>
+      </div>
+    `;
+}
+
+function renderAgentPreviewModal() {
+    if (!state.isAgentPreviewOpen) {
+        return '';
+    }
+
+    return `
+      <div class="modal-overlay" id="agent-preview-modal-overlay" role="presentation">
+        <section class="modal-card agent-preview-modal-card" id="agent-preview-modal" role="dialog" aria-modal="true" aria-labelledby="agent-preview-modal-title">
+          <button class="modal-close" id="close-agent-preview-modal" type="button" aria-label="Close dialog">✕</button>
           <div class="modal-hero">
             <div class="modal-hero-icon" aria-hidden="true">🤖</div>
             <div>
-              <span class="kicker">GitHub.com workflow</span>
-              <h2 id="coding-agent-modal-title">Run coding agents with a clean handoff</h2>
+              <span class="kicker">GitHub Coding Agent</span>
+              <h2 id="agent-preview-modal-title">Assigned to GitHub Copilot coding agent</h2>
               <p>
-                Use GitHub.com as the control plane: define the work, launch the agent, review the generated branch or pull request, and iterate until it is ready to merge.
+                This preview highlights the handoff experience shown when the feature spec is assigned to the coding agent.
               </p>
             </div>
           </div>
           <figure class="modal-image-frame">
-            <img
-              class="modal-image"
-              src="https://github.blog/wp-content/uploads/2025/09/GitHub-Copilot-Changelog-Sept-25-2025-1.webp?fit=2048%2C1075"
-              alt="GitHub Coding Agent workflow visual"
-            />
+            <img class="modal-image" src="https://github.blog/wp-content/uploads/2025/09/GitHub-Copilot-Changelog-Sept-25-2025-1.webp?fit=2048%2C1075" alt="Large preview of the GitHub Coding Agent assignment experience" />
           </figure>
         </section>
       </div>
@@ -706,47 +847,166 @@ function bindRequirementsOutline() {
     });
 }
 
-  function bindCodingAgentModal() {
-    document.getElementById('open-coding-agent-modal')?.addEventListener('click', () => {
-      state.isCodingAgentModalOpen = true;
-      render();
+function bindPromptActions() {
+    document.querySelectorAll('[data-menu-prompt-key]').forEach((button) => {
+        button.addEventListener('click', () => {
+            state.activePromptKey = button.dataset.menuPromptKey;
+            state.activePaneMenuKey = null;
+            render();
+        });
     });
 
-    document.getElementById('close-coding-agent-modal')?.addEventListener('click', closeCodingAgentModal);
-    document.getElementById('coding-agent-modal-overlay')?.addEventListener('click', (event) => {
-      if (event.target.id === 'coding-agent-modal-overlay') {
-        closeCodingAgentModal();
-      }
+    document.getElementById('close-prompt-modal')?.addEventListener('click', closePromptModal);
+    document.getElementById('prompt-modal-overlay')?.addEventListener('click', (event) => {
+        if (event.target.id === 'prompt-modal-overlay') {
+            closePromptModal();
+        }
+    });
+}
+
+function bindAssignMenu() {
+    document.getElementById('toggle-assign-menu')?.addEventListener('click', () => {
+        state.activePaneMenuKey = null;
+        state.isAssignMenuOpen = !state.isAssignMenuOpen;
+        render();
     });
 
-    if (!hasBoundModalKeyboardHandler) {
-      document.addEventListener('keydown', handleCodingAgentModalKeydown);
-      hasBoundModalKeyboardHandler = true;
-    }
-  }
+    document.querySelectorAll('[data-assignee-id]').forEach((input) => {
+        input.addEventListener('change', () => {
+            toggleAssignee(input.dataset.assigneeId);
+        });
+    });
+}
 
-  function handleCodingAgentModalKeydown(event) {
-    if (event.key === 'Escape' && state.isCodingAgentModalOpen) {
-      closeCodingAgentModal();
-    }
-  }
+function bindAgentPreviewModal() {
+    document.getElementById('close-agent-preview-modal')?.addEventListener('click', closeAgentPreviewModal);
+    document.getElementById('agent-preview-modal-overlay')?.addEventListener('click', (event) => {
+        if (event.target.id === 'agent-preview-modal-overlay') {
+            closeAgentPreviewModal();
+        }
+    });
+}
 
-  function closeCodingAgentModal() {
-    if (!state.isCodingAgentModalOpen) {
-      return;
+function bindPaneMenus() {
+    document.querySelectorAll('[data-pane-menu-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const paneKey = button.dataset.paneMenuToggle;
+            state.isAssignMenuOpen = false;
+            state.activePaneMenuKey = state.activePaneMenuKey === paneKey ? null : paneKey;
+            render();
+        });
+    });
+}
+
+function bindGlobalInteractions() {
+    if (!hasBoundGlobalKeyboardHandler) {
+        document.addEventListener('keydown', handleGlobalKeydown);
+        hasBoundGlobalKeyboardHandler = true;
     }
 
-    state.isCodingAgentModalOpen = false;
+    if (!hasBoundGlobalClickHandler) {
+        document.addEventListener('click', handleGlobalClick);
+        hasBoundGlobalClickHandler = true;
+    }
+}
+
+function handleGlobalKeydown(event) {
+    if (event.key !== 'Escape') {
+        return;
+    }
+
+    if (state.isAgentPreviewOpen) {
+        closeAgentPreviewModal();
+        return;
+    }
+
+    if (state.activePromptKey) {
+        closePromptModal();
+        return;
+    }
+
+    if (state.activePaneMenuKey) {
+        state.activePaneMenuKey = null;
+        render();
+        return;
+    }
+
+    if (state.isAssignMenuOpen) {
+        state.isAssignMenuOpen = false;
+        render();
+    }
+}
+
+function handleGlobalClick(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+        return;
+    }
+
+    const clickedPaneMenu = target.closest('.pane-menu-shell');
+    const clickedAssignShell = target.closest('.assign-shell');
+
+    if (state.activePaneMenuKey && !clickedPaneMenu) {
+        state.activePaneMenuKey = null;
+        render();
+        return;
+    }
+
+    if (state.isAssignMenuOpen && !clickedAssignShell) {
+        state.isAssignMenuOpen = false;
+        render();
+    }
+}
+
+function closePromptModal() {
+    if (!state.activePromptKey) {
+        return;
+    }
+
+    state.activePromptKey = null;
+    state.activePaneMenuKey = null;
     render();
-  }
+}
+
+function closeAgentPreviewModal() {
+    if (!state.isAgentPreviewOpen) {
+        return;
+    }
+
+    state.isAgentPreviewOpen = false;
+    render();
+}
+
+function toggleAssignee(assigneeId) {
+    if (!assigneeId) {
+        return;
+    }
+
+    const isSelected = state.selectedAssignees.includes(assigneeId);
+
+    if (isSelected) {
+        state.selectedAssignees = state.selectedAssignees.filter((id) => id !== assigneeId);
+    } else {
+        state.selectedAssignees = [...state.selectedAssignees, assigneeId];
+    }
+
+    if (assigneeId === 'github-coding-agent' && !isSelected) {
+        state.isAssignMenuOpen = false;
+        state.activePaneMenuKey = null;
+        state.activePromptKey = null;
+        state.isAgentPreviewOpen = true;
+    }
+
+    render();
+}
 
 function decorateRequirementsHtml(html, sections) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-  const firstHeading = doc.body.querySelector('h1');
-  if (firstHeading?.textContent?.trim() === 'Requirements Document') {
-    firstHeading.remove();
-  }
+    const firstHeading = doc.body.querySelector('h1');
+    if (firstHeading?.textContent?.trim() === 'Requirements Document') {
+        firstHeading.remove();
+    }
     const headings = [...doc.body.querySelectorAll('h2, h3')];
 
     headings.forEach((heading, index) => {

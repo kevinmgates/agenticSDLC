@@ -47,14 +47,22 @@ async function loadStageData() {
     const featuresPath = path.join(workspaceRoot, 'stages', '03-backlog', 'features.json');
     const userStoriesPath = path.join(workspaceRoot, 'stages', '03-backlog', 'user-stories.json');
     const specsDir = path.join(workspaceRoot, 'stages', '03-backlog', 'specs');
+    const promptFiles = {
+        requirements: path.join(workspaceRoot, 'prompts', '01-extract-requirements.md'),
+        epics: path.join(workspaceRoot, 'prompts', '02-generate-epics.md'),
+        features: path.join(workspaceRoot, 'prompts', '03-generate-features.md'),
+        stories: path.join(workspaceRoot, 'prompts', '04-generate-user-stories.md'),
+        detail: path.join(workspaceRoot, 'prompts', '04b-generate-specs.md'),
+    };
 
-    const [transcriptMarkdown, requirementsMarkdown, epics, features, userStories, specs] = await Promise.all([
+    const [transcriptMarkdown, requirementsMarkdown, epics, features, userStories, specs, prompts] = await Promise.all([
         readText(transcriptPath),
         readText(requirementsPath),
         readJson(epicsPath),
         readJson(featuresPath),
         readJson(userStoriesPath),
         readSpecs(specsDir),
+        readPromptFiles(promptFiles),
     ]);
 
     const featuresByEpic = groupBy(features, 'epic_id');
@@ -112,6 +120,7 @@ async function loadStageData() {
         features: enrichedFeatures,
         userStories: enrichedStories,
         specs,
+        promptFiles: prompts,
     };
 }
 
@@ -149,6 +158,25 @@ async function readSpecs(specsDir) {
     );
 
     return specs;
+}
+
+async function readPromptFiles(promptFiles) {
+    const entries = await Promise.all(
+        Object.entries(promptFiles).map(async ([key, filePath]) => {
+            const markdown = await readText(filePath);
+            return [
+                key,
+                {
+                    key,
+                    path: relativeToWorkspace(filePath),
+                    title: path.basename(filePath),
+                    markdown,
+                },
+            ];
+        }),
+    );
+
+    return Object.fromEntries(entries);
 }
 
 function extractSections(markdown) {

@@ -1,0 +1,143 @@
+<svg width="1600" height="1035" viewBox="0 0 1600 1035" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="1035" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111F"/>
+      <stop offset="1" stop-color="#0D1F46"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1020" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#081424"/>
+      <stop offset="1" stop-color="#071635"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0F1A2B"/>
+      <stop offset="1" stop-color="#091221"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1035" rx="0" fill="url(#bg)"/>
+
+  <rect x="16" y="16" width="1020" height="170" rx="24" fill="url(#hero)" stroke="rgba(148,163,184,0.16)" filter="url(#shadow)"/>
+  <rect x="34" y="34" width="174" height="28" rx="14" fill="#0F766E" opacity="0.95"/>
+  <text x="48" y="53" fill="#A7F3D0" font-size="18" font-family="Arial, Helvetica, sans-serif" font-weight="700">SCOPILOT</text>
+  <text x="36" y="102" fill="#EEF2FF" font-size="58" font-family="Arial, Helvetica, sans-serif" font-weight="800">Ship Faster. Start Smarter.</text>
+  <text x="36" y="134" fill="#B8C7DE" font-size="26" font-family="Arial, Helvetica, sans-serif">AI agents that transform scoping calls into structured backlogs in minutes, not days.</text>
+
+  <rect x="1052" y="16" width="532" height="170" rx="24" fill="#081424" stroke="rgba(148,163,184,0.16)" filter="url(#shadow)"/>
+  <text x="1072" y="44" fill="#F8FAFC" font-size="28" font-family="Arial, Helvetica, sans-serif" font-weight="700">Backlog snapshot</text>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="1072" y="68" width="236" height="50" rx="12" fill="#18283D" stroke="#26364C"/>
+    <text x="1092" y="94" fill="#F8FAFC" font-size="28" font-weight="800">10</text>
+    <text x="1092" y="112" fill="#A9B7CA" font-size="18">Epics</text>
+    <rect x="1318" y="68" width="236" height="50" rx="12" fill="#18283D" stroke="#26364C"/>
+    <text x="1338" y="94" fill="#F8FAFC" font-size="28" font-weight="800">31</text>
+    <text x="1338" y="112" fill="#A9B7CA" font-size="18">Features</text>
+    <rect x="1072" y="128" width="236" height="50" rx="12" fill="#18283D" stroke="#26364C"/>
+    <text x="1092" y="154" fill="#F8FAFC" font-size="28" font-weight="800">68</text>
+    <text x="1092" y="172" fill="#A9B7CA" font-size="18">User stories</text>
+    <rect x="1318" y="128" width="236" height="50" rx="12" fill="#18283D" stroke="#26364C"/>
+    <text x="1338" y="154" fill="#F8FAFC" font-size="28" font-weight="800">31</text>
+    <text x="1338" y="172" fill="#A9B7CA" font-size="18">Specs</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="16" y="200" width="120" height="800" rx="22" fill="url(#card)" stroke="#203047"/>
+    <rect x="152" y="200" width="360" height="800" rx="22" fill="url(#card)" stroke="#203047"/>
+    <rect x="526" y="200" width="360" height="800" rx="22" fill="url(#card)" stroke="#203047"/>
+    <rect x="900" y="200" width="684" height="800" rx="22" fill="url(#card)" stroke="#203047"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="32" y="214" width="88" height="36" rx="18" fill="#1E293B" stroke="#314155"/>
+    <text x="52" y="237" fill="#E2E8F0" font-size="18" font-weight="700">GitHub</text>
+    <rect x="46" y="332" width="64" height="30" rx="15" fill="#1E3A8A"/>
+    <text x="67" y="353" fill="#BFDBFE" font-size="16" font-weight="700">10</text>
+  </g>
+
+  <line x1="16" y1="314" x2="136" y2="314" stroke="#22D3EE" stroke-width="2"/>
+  <rect x="24" y="320" width="104" height="686" rx="18" fill="#0F172A" stroke="#22D3EE"/>
+  <rect x="58" y="336" width="40" height="26" rx="13" fill="#233557"/>
+  <text x="70" y="354" fill="#A5B4FC" font-size="12" font-family="Arial, Helvetica, sans-serif">Critical</text>
+
+  <g font-family="Arial, Helvetica, sans-serif" fill="#E5EEF9">
+    <text x="32" y="390" font-size="18" font-weight="700">Mobile Experience</text>
+    <text x="32" y="418" font-size="12" fill="#A9B7CA">Cross-platform mobile application</text>
+    <text x="32" y="436" font-size="12" fill="#A9B7CA">supports iOS and Android</text>
+    <text x="32" y="454" font-size="12" fill="#A9B7CA">offline use with reliable sync,</text>
+    <text x="32" y="472" font-size="12" fill="#A9B7CA">photo capture, and compliance</text>
+    <text x="32" y="490" font-size="12" fill="#A9B7CA">workflows on site.</text>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="176" y="238" fill="#F8FAFC" font-size="30" font-weight="800">4. Features</text>
+    <text x="176" y="268" fill="#A9B7CA" font-size="18">Feature breakdown for EPIC-001 — Mobile Field Technician Experience.</text>
+    <rect x="418" y="214" width="78" height="34" rx="17" fill="#1E293B" stroke="#314155"/>
+    <text x="440" y="236" fill="#E2E8F0" font-size="16" font-weight="700">GitHub</text>
+    <rect x="456" y="274" width="32" height="32" rx="16" fill="#1E3A8A"/>
+    <text x="468" y="295" fill="#BFDBFE" font-size="16" font-weight="700">4</text>
+
+    <rect x="176" y="328" width="312" height="366" rx="20" fill="#10192B" stroke="#22D3EE"/>
+    <rect x="192" y="346" width="88" height="28" rx="14" fill="#1E3A8A"/>
+    <text x="205" y="365" fill="#BFDBFE" font-size="16" font-weight="700">FEAT-001</text>
+    <rect x="412" y="346" width="64" height="28" rx="14" fill="#233557"/>
+    <text x="424" y="365" fill="#CBD5E1" font-size="14" font-weight="700">Critical</text>
+    <text x="332" y="410" text-anchor="middle" fill="#F8FAFC" font-size="26" font-weight="800">Cross-Platform Mobile App Shell &amp;</text>
+    <text x="332" y="442" text-anchor="middle" fill="#F8FAFC" font-size="26" font-weight="800">Navigation</text>
+    <text x="332" y="492" text-anchor="middle" fill="#A9B7CA" font-size="17">Build the foundational mobile application</text>
+    <text x="332" y="515" text-anchor="middle" fill="#A9B7CA" font-size="17">framework supporting iOS and Android</text>
+    <text x="332" y="538" text-anchor="middle" fill="#A9B7CA" font-size="17">with shared navigation, authentication flow, and</text>
+    <text x="332" y="561" text-anchor="middle" fill="#A9B7CA" font-size="17">responsive layout optimized for both phones</text>
+    <text x="332" y="584" text-anchor="middle" fill="#A9B7CA" font-size="17">and ruggedized tablets.</text>
+
+    <rect x="194" y="620" width="106" height="28" rx="14" fill="#24354E"/>
+    <rect x="308" y="620" width="74" height="28" rx="14" fill="#24354E"/>
+    <rect x="390" y="620" width="92" height="28" rx="14" fill="#24354E"/>
+    <text x="208" y="639" fill="#D3E2F7" font-size="14">Field Technician</text>
+    <text x="322" y="639" fill="#D3E2F7" font-size="14">3 stories</text>
+    <text x="406" y="639" fill="#D3E2F7" font-size="14">Spec available</text>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="550" y="238" fill="#F8FAFC" font-size="30" font-weight="800">5. User Stories</text>
+    <text x="550" y="268" fill="#A9B7CA" font-size="18">Delivery-ready stories for FEAT-001 — Cross-Platform Mobile App Shell &amp; Navigation.</text>
+    <rect x="792" y="214" width="78" height="34" rx="17" fill="#1E293B" stroke="#314155"/>
+    <text x="814" y="236" fill="#E2E8F0" font-size="16" font-weight="700">GitHub</text>
+    <rect x="830" y="274" width="32" height="32" rx="16" fill="#1E3A8A"/>
+    <text x="842" y="295" fill="#BFDBFE" font-size="16" font-weight="700">3</text>
+
+    <rect x="550" y="328" width="304" height="308" rx="20" fill="#10192B" stroke="#22D3EE"/>
+    <rect x="568" y="346" width="68" height="28" rx="14" fill="#1E3A8A"/>
+    <text x="582" y="365" fill="#BFDBFE" font-size="16" font-weight="700">US-001</text>
+    <rect x="794" y="346" width="42" height="28" rx="14" fill="#233557"/>
+    <text x="805" y="365" fill="#CBD5E1" font-size="14" font-weight="700">8 pts</text>
+    <text x="702" y="410" text-anchor="middle" fill="#F8FAFC" font-size="24" font-weight="800">Set up cross-platform mobile app</text>
+    <text x="702" y="440" text-anchor="middle" fill="#F8FAFC" font-size="24" font-weight="800">framework</text>
+    <text x="702" y="490" text-anchor="middle" fill="#A9B7CA" font-size="17">As a field technician, I want to install and</text>
+    <text x="702" y="513" text-anchor="middle" fill="#A9B7CA" font-size="17">launch a mobile app on my iOS or Android</text>
+    <text x="702" y="536" text-anchor="middle" fill="#A9B7CA" font-size="17">device, so that I can access the field service</text>
+    <text x="702" y="559" text-anchor="middle" fill="#A9B7CA" font-size="17">platform from any supported phone or tablet.</text>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="924" y="238" fill="#F8FAFC" font-size="30" font-weight="800">6. Feature Spec</text>
+    <text x="924" y="268" fill="#A9B7CA" font-size="18">Implementation context, selected story focus, and the full spec document.</text>
+    <rect x="1308" y="214" width="252" height="42" rx="21" fill="#115E59" stroke="#34D399"/>
+    <circle cx="1332" cy="235" r="10" fill="#A7F3D0" opacity="0.25"/>
+    <text x="1326" y="240" fill="#ECFDF5" font-size="18">+</text>
+    <text x="1352" y="240" fill="#ECFDF5" font-size="19" font-weight="700">Send to GitHub Coding Agent</text>
+    <rect x="1518" y="276" width="52" height="28" rx="14" fill="#1E3A8A"/>
+    <text x="1531" y="295" fill="#BFDBFE" font-size="14" font-weight="700">Spec</text>
+    <text x="924" y="330" fill="#67E8F9" font-size="16">stages/03-backlog/specs/FEAT-001-cross-platform-mobile-app-shell-and-navigation.spec.md</text>
+
+    <rect x="924" y="362" width="628" height="286" rx="18" fill="#0F172A" stroke="#26364C"/>
+    <text x="950" y="408" fill="#F8FAFC" font-size="34" font-weight="800">FEAT-001 — Cross-Platform Mobile App Shell &amp; Navigation</text>
+    <text x="950" y="452" fill="#A9B7CA" font-size="18">Build the foundational mobile application framework supporting iOS and Android with shared</text>
+    <text x="950" y="476" fill="#A9B7CA" font-size="18">navigation, authentication flow, and responsive layout optimized for both phones and ruggedized</text>
+    <text x="950" y="500" fill="#A9B7CA" font-size="18">tablets.</text>
+  </g>
+
+  <circle cx="1568" cy="995" r="26" fill="#38BDF8"/>
+  <text x="1556" y="1003" fill="#EFF6FF" font-size="28" font-family="Arial, Helvetica, sans-serif">↻</text>
+</svg>
